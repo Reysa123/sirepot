@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:sirepot/model/service_reminder.dart';
+
 class KpiTableWidget extends StatelessWidget {
   final List<ServiceReminder> data;
 
-  KpiTableWidget({required this.data});
+  const KpiTableWidget({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +16,7 @@ class KpiTableWidget extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            headingRowColor: MaterialStateProperty.all(Colors.red.shade900), // Warna Agung Toyota
+            headingRowColor: WidgetStateProperty.all(Colors.red.shade900), // Warna Agung Toyota
             columns: const [
               DataColumn(label: Text('Police No', style: TextStyle(color: Colors.white))),
               DataColumn(label: Text('Model', style: TextStyle(color: Colors.white))),

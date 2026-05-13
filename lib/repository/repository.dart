@@ -1,3 +1,5 @@
+import 'package:sirepot/model/service_reminder.dart';
+
 class KpiRepository {
   //final supabase = Supabase.instance.client;
 
@@ -11,6 +13,6 @@ class KpiRepository {
     //     .range(from, to)
     //     .order('last_service', ascending: false);
 
-    return (response as List).map((e) => ServiceReminder.fromMap(e)).toList();
+    return (response).map((e) => ServiceReminder.fromMap(e)).toList();
   }
 }

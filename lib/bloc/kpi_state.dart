@@ -1,3 +1,5 @@
+import 'package:sirepot/model/service_reminder.dart';
+
 abstract class KpiState {}
 
 class KpiInitial extends KpiState {}
