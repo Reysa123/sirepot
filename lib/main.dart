@@ -16,11 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       // 1. Sediakan Repository
-      providers: [
-        RepositoryProvider(
-          create: (context) => KpiRepository(),
-        ),
-      ],
+      providers: [RepositoryProvider(create: (context) => KpiRepository())],
       child: MultiBlocProvider(
         // 2. Sediakan Bloc dan trigger fetch data pertama kali
         providers: [

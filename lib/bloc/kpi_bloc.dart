@@ -9,18 +9,19 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
 
   KpiBloc(this.repository) : super(KpiInitial()) {
     on<FetchKpiData>((event, emit) async {
+      emit(KpiLoading());
       try {
         emit(KpiLoading());
         final data = await repository.fetchKpiData(event.page, pageSize);
 
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
-        print(data.toList().toString());
         emit(
           KpiLoaded(
             data: data,
             currentPage: event.page,
             hasReachedMax: reachedMax,
+            menu: event.widget,
           ),
         );
       } catch (e) {
