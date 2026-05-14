@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
+import 'package:data_table_2/data_table_2.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -11,18 +12,16 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // Menggunakan background color abu-abu terang agar Card terlihat menonjol
-      backgroundColor: Colors.grey[100],
+      //backgroundColor: Colors.grey[100],
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          color: Colors.red,
-
-          // image: DecorationImage(
-          //   image: AssetImage("assets/images/background_toyota.jpg"),
-          //   fit:
-          //       BoxFit.cover, // Menyesuaikan gambar agar menutupi seluruh layar
-          // ),
+          //color: Colors.red,
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.fill, // Menyesuaikan gambar agar menutupi seluruh layar
+          ),
         ),
         child: Column(
           children: [
@@ -80,7 +79,7 @@ class DashboardPage extends StatelessWidget {
                           ),
 
                           // FOOTER PAGINATION tetap di bawah setelah tabel
-                          _buildPaginationFooter(),
+                          // _buildPaginationFooter(),
                         ],
                       ),
                     ),
@@ -98,7 +97,7 @@ class DashboardPage extends StatelessWidget {
     return Container(
       width: 260,
       // Menggunakan warna gelap profesional seperti permintaan awal
-      color: const Color(0xFF1A1A1A),
+      color: Colors.transparent,
       child: Column(
         children: [
           // const DrawerHeader(
@@ -115,17 +114,19 @@ class DashboardPage extends StatelessWidget {
           // ),
           Expanded(
             child: ListView(
+              padding: EdgeInsets.all(8),
               children: [
                 _sidebarItem(
-                  Icons.notifications,
+                  'images/logo1.png',
                   "Reminder Service",
                   isSelected: true,
                 ),
-                _sidebarItem(Icons.analytics, "Summary Reminder"),
-                _sidebarItem(Icons.star, "CR7"),
-                _sidebarItem(Icons.inventory, "Special Order Part"),
-                _sidebarItem(Icons.build, "Maintenance"),
-                _sidebarItem(Icons.people, "Database Sales"),
+                _sidebarItem('images/logo1.png', "Summary Reminder"),
+                _sidebarItem('images/logo2.png', "CR7"),
+                _sidebarItem('images/logo3.png', "Special Order Part"),
+                _sidebarItem('images/logo4.png', "Maintenance"),
+                _sidebarItem('images/logo1.png', "Database Sales"),
+                Image.asset('images/sitajem.png', width: 150, height: 150),
               ],
             ),
           ),
@@ -136,23 +137,36 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildHeader() {
     return Container(
-      height: 120,
+      height: 100,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24),
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            "AGUNG TOYOTA TABANAN",
-            style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+          Container(
+            width: 500,
+            height: 100,
+            decoration: BoxDecoration(
+              //color: Colors.red,
+              image: DecorationImage(
+                image: AssetImage("images/sireport.png"),
+                fit: BoxFit
+                    .fill, // Menyesuaikan gambar agar menutupi seluruh layar
+              ),
+            ),
           ),
-          Row(
-            children: [
-              const Icon(Icons.account_circle, size: 30),
-              const SizedBox(width: 10),
-              Text("Admin Service", style: TextStyle(color: Colors.grey[700])),
-            ],
+          Container(
+            width: 200,
+            height: 70,
+            decoration: BoxDecoration(
+              //color: Colors.red,
+              image: DecorationImage(
+                image: AssetImage("images/agung.png"),
+                fit: BoxFit
+                    .fill, // Menyesuaikan gambar agar menutupi seluruh layar
+              ),
+            ),
           ),
         ],
       ),
@@ -161,13 +175,25 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildFilterSection() {
     return Row(
+      spacing: 15,
       children: [
+        _filterDropdown("Repair Type"),
+        _filterDropdown("SBE"),
+        _filterDropdown("Program Service"),
+        _filterDropdown("Month"),
         SizedBox(
-          width: 300, // Memberi lebar tetap pada search bar
+          height: 43,
+          width: 200, // Memberi lebar tetap pada search bar
           child: TextField(
             decoration: InputDecoration(
-              hintText: "Search Police No...",
-              prefixIcon: const Icon(Icons.search),
+              hintText: "Search...",
+              suffixIcon: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                child: const Icon(Icons.search, color: Colors.white),
+              ),
               fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(
@@ -177,10 +203,6 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 15),
-        _filterDropdown("Repair Type"),
-        const SizedBox(width: 10),
-        _filterDropdown("Month"),
       ],
     );
   }
@@ -195,76 +217,88 @@ class DashboardPage extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              headingRowColor: WidgetStateProperty.all(const Color(0xFFEB0A1E)),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              columns: const [
-                DataColumn(label: Text('NO')),
-                DataColumn(label: Text('Police No')),
-                DataColumn(label: Text('Model')),
-                DataColumn(label: Text('Nama Pelanggan')),
-                DataColumn(label: Text('Last Service')),
-                DataColumn(label: Text('Action')),
-              ],
-              rows: List.generate(data.length, (index) {
-                final item = data[index];
-                return DataRow(
-                  cells: [
-                    DataCell(Text("${index + 1}")),
-                    DataCell(Text(item.policeNo)),
-                    DataCell(Text(item.model)),
-                    DataCell(Text(item.namaPelanggan)),
-                    DataCell(Text(item.lastService.toString().split(' ')[0])),
-                    DataCell(const Icon(Icons.more_horiz, color: Colors.blue)),
-                  ],
-                );
-              }),
-            ),
+        child: DataTable2(
+          headingRowColor: WidgetStateProperty.all(const Color(0xFFEB0A1E)),
+          headingTextStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
+          minWidth: 800,
+          dataTextStyle: TextStyle(
+            fontSize: 12,
+          ), // penting untuk horizontal scroll
+          columnSpacing: 16,
+          dataRowHeight: 30,
+          horizontalMargin: 12,
+          fixedLeftColumns: 1, // kolom NO tetap
+          border: TableBorder.all(color: Colors.grey.shade300, width: 0.5),
+          columns: const [
+            DataColumn2(label: Text('NO'), fixedWidth: 50),
+            DataColumn2(label: Text('Police No'), size: ColumnSize.L),
+            DataColumn2(label: Text('Model'), size: ColumnSize.L),
+            DataColumn2(label: Text('Nama Pelanggan'), size: ColumnSize.L),
+            DataColumn2(label: Text('NO HP'), size: ColumnSize.L),
+            DataColumn(label: Text('Last Service')),
+            DataColumn(label: Text('Last Job')),
+            DataColumn(label: Text('Program')),
+            DataColumn(label: Text('Action')),
+          ],
+          rows: List.generate(data.length, (index) {
+            final item = data[index];
+            return DataRow2(
+              onTap: () => print("Row $index tapped"),
+              cells: [
+                DataCell(Text("${index + 1}")),
+                DataCell(Text(item.policeNo)),
+                DataCell(Text(item.model)),
+                DataCell(Text(item.namaPelanggan)),
+                DataCell(Text(item.noHp)),
+                DataCell(Text(item.lastService.toString())),
+                DataCell(Text(item.lastJob)),
+                DataCell(Text(item.program)),
+                DataCell(
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.message_sharp, size: 20),
+                        color: Colors.red,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.phone_forwarded, size: 20),
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );
   }
 
-  Widget _buildPaginationFooter() {
+  Widget _sidebarItem(String icon, String label, {bool isSelected = false}) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Showing 1 to 13 of 100 entries",
-            style: TextStyle(color: Colors.grey),
-          ),
-          Row(
-            children: [
-              _pageButton("Previous", isEnabled: false),
-              _pageButton("1", isActive: true),
-              _pageButton("2"),
-              _pageButton("Next"),
-            ],
-          ),
-        ],
+      padding: const EdgeInsets.only(top: 5.0),
+      child: ListTile(
+        leading: Image.asset(
+          icon,
+          width: 50,
+          height: 50,
+          color: isSelected ? Colors.white : Colors.grey[400],
+        ),
+        title: Text(
+          label,
+          style: TextStyle(color: isSelected ? Colors.white : Colors.grey[400]),
+        ),
+        tileColor: isSelected
+            ? Colors.red.withOpacity(0.1)
+            : Colors.transparent,
+        onTap: () {},
       ),
-    );
-  }
-
-  Widget _sidebarItem(IconData icon, String label, {bool isSelected = false}) {
-    return ListTile(
-      leading: Icon(icon, color: isSelected ? Colors.red : Colors.grey),
-      title: Text(
-        label,
-        style: TextStyle(color: isSelected ? Colors.white : Colors.grey[400]),
-      ),
-      tileColor: isSelected ? Colors.red.withOpacity(0.1) : Colors.transparent,
-      onTap: () {},
     );
   }
 

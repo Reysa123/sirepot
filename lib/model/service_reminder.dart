@@ -24,7 +24,7 @@ class ServiceReminder {
       model: map['model'] ?? '',
       namaPelanggan: map['nama_pelanggan'] ?? '',
       noHp: map['no_hp'] ?? '',
-      lastService: DateTime.parse(map['last_service']),
+      lastService: (map['last_service']),
       lastJob: map['last_job'] ?? '',
       program: map['program'] ?? '',
     );
