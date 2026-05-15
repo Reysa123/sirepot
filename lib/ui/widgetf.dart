@@ -6,8 +6,8 @@ import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class WidgetB extends StatelessWidget {
-  const WidgetB({super.key});
+class WidgetF extends StatelessWidget {
+  const WidgetF({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,61 +53,33 @@ class WidgetB extends StatelessWidget {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Repair Type", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("SBE", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Program Service", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-            ),
-            child: const Icon(Icons.file_open, color: Colors.white),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            height: 45,
-            width: 45,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-            ),
-            child: const FaIcon(
-              FontAwesomeIcons.fileExcel,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 43,
-          width: 200, // Memberi lebar tetap pada search bar
-          child: TextField(
-            style: TextStyle(fontSize: 12),
-            decoration: InputDecoration(
-              hintText: "Search...",
-              suffixIcon: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-                child: const Icon(Icons.search, color: Colors.white),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
-            ),
-          ),
-        ),
+        _filterDropdown("Sales", ['a', 'b', 'c'], (v) {}),
+
+        _filterDropdown("VIN", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("Model", ['a', 'b', 'c'], (v) {}),
+        // SizedBox(
+        //   height: 43,
+        //   width: 200, // Memberi lebar tetap pada search bar
+        //   child: TextField(
+        //     style: TextStyle(fontSize: 12),
+        //     decoration: InputDecoration(
+        //       hintText: "Search Police No",
+        //       suffixIcon: Container(
+        //         decoration: BoxDecoration(
+        //           color: Colors.black,
+        //           borderRadius: BorderRadius.all(Radius.circular(50)),
+        //         ),
+        //         child: const Icon(Icons.search, color: Colors.white),
+        //       ),
+        //       fillColor: Colors.white,
+        //       filled: true,
+        //       border: OutlineInputBorder(
+        //         borderRadius: BorderRadius.circular(10),
+        //       ),
+        //       contentPadding: const EdgeInsets.symmetric(vertical: 0),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -158,13 +130,12 @@ class WidgetB extends StatelessWidget {
 
           columns: const [
             DataColumn2(label: Text('NO'), fixedWidth: 50),
-            DataColumn2(label: Text('Police No'), size: ColumnSize.L),
-            DataColumn2(label: Text('Model'), size: ColumnSize.M),
-            DataColumn2(label: Text('Nama Pelanggan'), size: ColumnSize.L),
-            DataColumn2(label: Text('NO HP'), size: ColumnSize.M),
-            DataColumn(label: Text('Last Service')),
-            DataColumn(label: Text('Last Job')),
-            DataColumn(label: Text('Program')),
+            DataColumn2(label: Text('Police No')),
+            DataColumn2(label: Text('SA')),
+            DataColumn2(label: Text('NO HP')),
+            DataColumn2(label: Text('Nama Part')),
+            DataColumn(label: Text('ETA')),
+            DataColumn(label: Text('ATA')),
             DataColumn(label: Text('Action')),
           ],
         ),
@@ -242,7 +213,6 @@ class ServiceReminderSource extends DataTableSource {
         DataCell(Text(item.model)),
         DataCell(Text(item.namaPelanggan)),
         DataCell(Text(item.noHp)),
-        DataCell(Text(item.lastService.toString())),
         DataCell(Text(item.lastJob)),
         DataCell(Text(item.program)),
         DataCell(

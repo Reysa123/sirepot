@@ -21,7 +21,6 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
             data: data,
             currentPage: event.page,
             hasReachedMax: reachedMax,
-            menu: event.widget,
           ),
         );
       } catch (e) {

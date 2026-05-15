@@ -3,7 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
+import 'package:sirepot/bloc/menu/navigation_bloc.dart';
+import 'package:sirepot/bloc/menu/navigation_event.dart';
+import 'package:sirepot/bloc/menu/navigation_state.dart';
 import 'package:sirepot/ui/widgetb.dart';
+import 'package:sirepot/ui/widgetd.dart';
+import 'package:sirepot/ui/widgete.dart';
+import 'package:sirepot/ui/widgetf.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -13,54 +19,47 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       // Menggunakan background color abu-abu terang agar Card terlihat menonjol
       //backgroundColor: Colors.grey[100],
-      body: BlocBuilder<KpiBloc, KpiState>(
+      body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
-          print(state);
-          if (state is KpiLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is KpiLoaded) {
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                //color: Colors.red,
-                image: DecorationImage(
-                  image: AssetImage("images/background.jpg"),
-                  fit: BoxFit
-                      .fill, // Menyesuaikan gambar agar menutupi seluruh layar
-                ),
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              //color: Colors.red,
+              image: DecorationImage(
+                image: AssetImage("images/background.jpg"),
+                fit: BoxFit
+                    .fill, // Menyesuaikan gambar agar menutupi seluruh layar
               ),
-              child: Column(
-                children: [
-                  // Header tetap di paling atas
-                  _buildHeader(),
+            ),
+            child: Column(
+              children: [
+                // Header tetap di paling atas
+                _buildHeader(),
 
-                  // Row untuk Sidebar dan Main Content dibungkus Expanded
-                  // agar mengambil sisa tinggi layar yang tersedia
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // SIDEBAR
-                        _buildSidebar(context, state),
+                // Row untuk Sidebar dan Main Content dibungkus Expanded
+                // agar mengambil sisa tinggi layar yang tersedia
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // SIDEBAR
+                      _buildSidebar(context, state.selectedIndex),
 
-                        // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
-                        state.menu,
-                      ],
-                    ),
+                      // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
+                      Expanded(child: _getMenuWidget(state.selectedIndex)),
+                    ],
                   ),
-                ],
-              ),
-            );
-          } else {
-            return Container();
-          }
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
   }
 
-  Widget _buildSidebar(BuildContext context, KpiState state) {
+  Widget _buildSidebar(BuildContext context, int index) {
     return Container(
       width: 260,
       // Menggunakan warna gelap profesional seperti permintaan awal
@@ -86,39 +85,43 @@ class DashboardPage extends StatelessWidget {
                 _sidebarItem(
                   context,
                   'images/logo1.png',
-                  state,
+
                   "Dashboard KPI",
-                  isSelected: true,
-                  index: 0,
+                  0,
+                  index,
                 ),
                 _sidebarItem(
                   context,
                   'images/logo2.png',
-                  state,
+
                   "Reminder Service",
-                  isSelected: true,
-                  index: 1,
+                  1,
+                  index,
                 ),
                 _sidebarItem(
                   context,
                   'images/logo3.png',
-                  state,
+
                   "Summary Reminder",
-                  isSelected: true,
-                  index: 2,
+                  2,
+                  index,
                 ),
-                _sidebarItem(context, 'images/logo4.png', state, "CR7"),
+                _sidebarItem(context, 'images/logo4.png', "CR7", 3, index),
                 _sidebarItem(
                   context,
                   'images/logo5.png',
-                  state,
+
                   "Special Order Part",
+                  4,
+                  index,
                 ),
                 _sidebarItem(
                   context,
                   'images/logo6.png',
-                  state,
+
                   "Maintenance Database Sales",
+                  5,
+                  index,
                 ),
                 Image.asset('images/sitajem.png', width: 150, height: 150),
               ],
@@ -127,6 +130,35 @@ class DashboardPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _getMenuWidget(int index) {
+    switch (index) {
+      case 0:
+        return const Center(
+          child: Text(
+            "Dashboard KPI Content",
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      case 1:
+        return WidgetB();
+      case 2:
+        return const Center(
+          child: Text(
+            "Summary Remainder",
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      case 3:
+        return WidgetD();
+      case 4:
+        return WidgetE();
+      case 5:
+        return WidgetF();
+      default:
+        return const Center(child: Text("Page Not Found"));
+    }
   }
 
   Widget _buildHeader() {
@@ -170,57 +202,36 @@ class DashboardPage extends StatelessWidget {
   Widget _sidebarItem(
     BuildContext context,
     String icon,
-    KpiState data,
-    String label, {
-    bool isSelected = false,
-    int index = 0,
-  }) {
-    if (data is KpiLoaded) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 5.0),
-        child: ListTile(
-          leading: Image.asset(
-            icon,
-            width: 50,
-            height: 50,
-            color: isSelected ? Colors.white : Colors.grey[400],
-          ),
-          title: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey[400],
-            ),
-          ),
-          tileColor: isSelected
-              ? Colors.red.withOpacity(0.1)
-              : Colors.transparent,
-          onTap: () {
-            switch (index) {
-              case 0:
-                context.read<KpiBloc>().add(FetchKpiData(widget: Container()));
-                break;
-              case 1:
-                context.read<KpiBloc>().add(
-                  FetchKpiData(widget: WidgetB(state: data.data)),
-                );
-                break;
-              case 2:
-                context.read<KpiBloc>().add(
-                  FetchKpiData(
-                    widget: Center(child: CircularProgressIndicator()),
-                  ),
-                );
-                break;
-              default:
-            }
-          },
+    String label,
+    int index,
+    int currentIndex,
+  ) {
+    final bool isSelected = index == currentIndex;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: ListTile(
+        leading: Image.asset(
+          icon,
+          width: 50,
+          height: 50,
+          color: isSelected ? Colors.white : Colors.grey[400],
         ),
-      );
-    } else if (data is KpiLoading) {
-      context.read<KpiBloc>().add(
-        FetchKpiData(widget: Center(child: CircularProgressIndicator())),
-      );
-    }
-    return SizedBox();
+        title: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.grey[400],
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        tileColor: isSelected
+            ? Colors.red.withOpacity(0.3)
+            : Colors.transparent,
+        onTap: () {
+          // Kirim event ke NavigationBloc
+          context.read<NavigationBloc>().add(ChangeMenuEvent(index));
+        },
+      ),
+    );
   }
 }

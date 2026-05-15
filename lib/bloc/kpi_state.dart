@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:sirepot/model/service_reminder.dart';
 
 abstract class KpiState {}
@@ -12,13 +12,11 @@ class KpiLoaded extends KpiState {
   final int currentPage;
 
   final bool hasReachedMax;
-  final Widget menu;
 
   KpiLoaded({
     required this.data,
     this.currentPage = 0,
     this.hasReachedMax = false,
-    this.menu=const SizedBox(),
   });
 }
 

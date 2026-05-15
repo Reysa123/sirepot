@@ -4,8 +4,7 @@ abstract class KpiEvent {}
 
 class FetchKpiData extends KpiEvent {
   final int page;
-   final Widget widget;
-   FetchKpiData({this.page = 0,this.widget=const SizedBox()});
+   FetchKpiData({this.page = 0});
 }
 
 class SearchKpiData extends KpiEvent {

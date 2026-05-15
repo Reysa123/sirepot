@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
+import 'package:sirepot/bloc/kpi_state.dart';
+import 'package:sirepot/bloc/menu/navigation_bloc.dart';
+import 'package:sirepot/bloc/menu/navigation_event.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/dashboardpage.dart';
 
@@ -24,6 +27,12 @@ class MyApp extends StatelessWidget {
             create: (context) => KpiBloc(
               context.read<KpiRepository>(),
             )..add(FetchKpiData()), // Event awal untuk isi tabel [cite: 10, 11]
+          ),
+          BlocProvider(
+            create: (context) => NavigationBloc()
+              ..add(
+                ChangeMenuEvent(0),
+              ), // Event awal untuk isi tabel [cite: 10, 11]
           ),
         ],
         child: MaterialApp(

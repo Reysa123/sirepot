@@ -6,8 +6,8 @@ import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class WidgetB extends StatelessWidget {
-  const WidgetB({super.key});
+class WidgetD extends StatelessWidget {
+  const WidgetD({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,45 +53,16 @@ class WidgetB extends StatelessWidget {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Repair Type", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("SBE", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Program Service", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("SA", ['a', 'b', 'c'], (v) {}),
         _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-            ),
-            child: const Icon(Icons.file_open, color: Colors.white),
-          ),
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            height: 45,
-            width: 45,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-            ),
-            child: const FaIcon(
-              FontAwesomeIcons.fileExcel,
-              color: Colors.white,
-            ),
-          ),
-        ),
+
         SizedBox(
           height: 43,
           width: 200, // Memberi lebar tetap pada search bar
           child: TextField(
             style: TextStyle(fontSize: 12),
             decoration: InputDecoration(
-              hintText: "Search...",
+              hintText: "Search Police No",
               suffixIcon: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
@@ -161,11 +132,9 @@ class WidgetB extends StatelessWidget {
             DataColumn2(label: Text('Police No'), size: ColumnSize.L),
             DataColumn2(label: Text('Model'), size: ColumnSize.M),
             DataColumn2(label: Text('Nama Pelanggan'), size: ColumnSize.L),
-            DataColumn2(label: Text('NO HP'), size: ColumnSize.M),
-            DataColumn(label: Text('Last Service')),
-            DataColumn(label: Text('Last Job')),
-            DataColumn(label: Text('Program')),
-            DataColumn(label: Text('Action')),
+            DataColumn2(label: Text('Perbaikan CR7'), size: ColumnSize.M),
+            DataColumn(label: Text('Estimasi')),
+            DataColumn(label: Text('Spare Part')),
           ],
         ),
       ),
@@ -241,8 +210,6 @@ class ServiceReminderSource extends DataTableSource {
         DataCell(Text(item.policeNo)),
         DataCell(Text(item.model)),
         DataCell(Text(item.namaPelanggan)),
-        DataCell(Text(item.noHp)),
-        DataCell(Text(item.lastService.toString())),
         DataCell(Text(item.lastJob)),
         DataCell(Text(item.program)),
         DataCell(
