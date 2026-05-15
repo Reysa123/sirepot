@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sirepot/bloc/kpi_bloc.dart';
-import 'package:sirepot/bloc/kpi_event.dart';
-import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/bloc/menu/navigation_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_event.dart';
 import 'package:sirepot/bloc/menu/navigation_state.dart';

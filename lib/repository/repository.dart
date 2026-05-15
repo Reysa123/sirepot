@@ -4,8 +4,6 @@ class KpiRepository {
   //final supabase = Supabase.instance.client;
 
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
-    final from = page * pageSize;
-    final to = from + pageSize - 1;
     final response = [
       {
         'police_no': 'DK123GG',
