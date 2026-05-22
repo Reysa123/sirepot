@@ -83,7 +83,7 @@ class WidgetD extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTable(BuildContext context, List<ServiceReminder> data) {
+  Widget _buildDataTable(BuildContext context, List<CR7> data) {
     // Inisialisasi source data
     final source = ServiceReminderSource(data, context);
 
@@ -135,6 +135,7 @@ class WidgetD extends StatelessWidget {
             DataColumn2(label: Text('Perbaikan CR7'), size: ColumnSize.M),
             DataColumn(label: Text('Estimasi')),
             DataColumn(label: Text('Spare Part')),
+            DataColumn(label: Text('Action')),
           ],
         ),
       ),
@@ -194,7 +195,7 @@ class WidgetD extends StatelessWidget {
 }
 
 class ServiceReminderSource extends DataTableSource {
-  final List<ServiceReminder> data;
+  final List<CR7> data;
   final BuildContext context;
 
   ServiceReminderSource(this.data, this.context);
@@ -210,8 +211,9 @@ class ServiceReminderSource extends DataTableSource {
         DataCell(Text(item.policeNo)),
         DataCell(Text(item.model)),
         DataCell(Text(item.namaPelanggan)),
-        DataCell(Text(item.lastJob)),
-        DataCell(Text(item.program)),
+        DataCell(Text(item.perbaikan)),
+        DataCell(Text(item.estimasi)),
+        DataCell(Text(item.sparepart)),
         DataCell(
           Row(
             children: [

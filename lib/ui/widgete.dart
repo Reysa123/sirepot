@@ -83,7 +83,7 @@ class WidgetE extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTable(BuildContext context, List<ServiceReminder> data) {
+  Widget _buildDataTable(BuildContext context, List<SpesialOrderPart> data) {
     // Inisialisasi source data
     final source = ServiceReminderSource(data, context);
 
@@ -195,7 +195,7 @@ class WidgetE extends StatelessWidget {
 }
 
 class ServiceReminderSource extends DataTableSource {
-  final List<ServiceReminder> data;
+  final List<SpesialOrderPart> data;
   final BuildContext context;
 
   ServiceReminderSource(this.data, this.context);
@@ -212,8 +212,8 @@ class ServiceReminderSource extends DataTableSource {
         DataCell(Text(item.model)),
         DataCell(Text(item.namaPelanggan)),
         DataCell(Text(item.noHp)),
-        DataCell(Text(item.lastJob)),
-        DataCell(Text(item.program)),
+        DataCell(Text(item.eta)),
+        DataCell(Text(item.ata)),
         DataCell(
           Row(
             children: [
