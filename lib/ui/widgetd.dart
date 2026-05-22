@@ -1,8 +1,8 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sirepot/bloc/kpi_bloc.dart';
-import 'package:sirepot/bloc/kpi_state.dart';
+import 'package:sirepot/bloc/cr7/cr7bloc.dart';
+import 'package:sirepot/bloc/cr7/cr7state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -11,12 +11,12 @@ class WidgetD extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<KpiBloc, KpiState>(
+    return BlocBuilder<Cr7Bloc, Cr7State>(
       builder: (context, state) {
-        if (state is KpiLoading) {
+        if (state is Cr7Loading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is KpiLoaded) {
+        if (state is Cr7Loaded) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

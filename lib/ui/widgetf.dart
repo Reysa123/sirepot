@@ -1,8 +1,8 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sirepot/bloc/kpi_bloc.dart';
-import 'package:sirepot/bloc/kpi_state.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_bloc.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -11,19 +11,19 @@ class WidgetF extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<KpiBloc, KpiState>(
+    return BlocBuilder<SpesialOrderPartBloc, SpesialOrderPartState>(
       builder: (context, state) {
-        if (state is KpiLoading) {
+        if (state is SpesialOrderPartLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is KpiLoaded) {
+        if (state is SpesialOrderPartLoaded) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(),
+                _buildFilterSection(state.sales,state.vin,state.model),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -49,14 +49,14 @@ class WidgetF extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildFilterSection(List<String> sales,List<String> vin,List<String> model,) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Sales", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("Sales", sales, (v) {}),
 
-        _filterDropdown("VIN", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Model", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("VIN", vin, (v) {}),
+        _filterDropdown("Model",model, (v) {}),
         // SizedBox(
         //   height: 43,
         //   width: 200, // Memberi lebar tetap pada search bar
