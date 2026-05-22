@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
+import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +15,9 @@ class WidgetB extends StatelessWidget {
     return BlocBuilder<KpiBloc, KpiState>(
       builder: (context, state) {
         if (state is KpiLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Expanded(
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
         if (state is KpiLoaded) {
           return Padding(
@@ -23,7 +26,13 @@ class WidgetB extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(),
+                _buildFilterSection(
+                  context,
+                  state.sbe,
+                  state.month,
+                  state.repair,
+                  state.program,
+                ),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -49,14 +58,20 @@ class WidgetB extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildFilterSection(
+    BuildContext ctx,
+    List<String> sbe,
+    List<String> month,
+    List<String> repair,
+    List<String> program,
+  ) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Repair Type", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("SBE", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Program Service", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("Repair Type", repair, (v) {}),
+        _filterDropdown("SBE", sbe, (v) {}),
+        _filterDropdown("Program Service", program, (v) {}),
+        _filterDropdown("Month", month, (v) {}),
         InkWell(
           onTap: () {},
           child: Container(
@@ -106,6 +121,9 @@ class WidgetB extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
+            onSubmitted: (value) {
+              ctx.read<KpiBloc>().add(SearchKpiData(value));
+            },
           ),
         ),
       ],

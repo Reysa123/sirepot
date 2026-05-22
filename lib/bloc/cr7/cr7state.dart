@@ -10,11 +10,14 @@ class Cr7Loading extends Cr7State {}
 class Cr7Loaded extends Cr7State {
   final List<CR7> data;
   final int currentPage;
-
+final List<String> sa;
+  final List<String> month;
   final bool hasReachedMax;
 
   Cr7Loaded({
     required this.data,
+    required this.sa,
+    required this.month,
     this.currentPage = 0,
     this.hasReachedMax = false,
   });

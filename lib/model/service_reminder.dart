@@ -55,7 +55,7 @@ class CR7 {
       model: map['model'] ?? '',
       namaPelanggan: map['nama_pelanggan'] ?? '',
       estimasi: map['estimasi'] ?? '',
-      perbaikan: (map['perbaikan']),
+      perbaikan: map['perbaikancr7'] ?? '',
       sparepart: map['sparepart'] ?? '',
     );
   }

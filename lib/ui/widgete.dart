@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_bloc.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,7 +24,7 @@ class WidgetE extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(state.sa),
+                _buildFilterSection(context, state.sa),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -49,7 +50,7 @@ class WidgetE extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(List<String> dp1) {
+  Widget _buildFilterSection(BuildContext ctx, List<String> dp1) {
     return Row(
       spacing: 15,
       children: [
@@ -77,6 +78,11 @@ class WidgetE extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
+            onSubmitted: (value) {
+              ctx.read<SpesialOrderPartBloc>().add(
+                SearchSpesialOrderPartData(value),
+              );
+            },
           ),
         ),
       ],

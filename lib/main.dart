@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sirepot/bloc/cr7/cr7bloc.dart';
+import 'package:sirepot/bloc/cr7/cr7event.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/menu/navigation_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_event.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_bloc.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/dashboardpage.dart';
 
@@ -26,6 +30,17 @@ class MyApp extends StatelessWidget {
             create: (context) => KpiBloc(
               context.read<KpiRepository>(),
             )..add(FetchKpiData()), // Event awal untuk isi tabel [cite: 10, 11]
+          ),
+          BlocProvider(
+            create: (context) => Cr7Bloc(
+              context.read<KpiRepository>(),
+            )..add(FetchCr7Data()), // Event awal untuk isi tabel [cite: 10, 11]
+          ),
+          BlocProvider(
+            create: (context) =>
+                SpesialOrderPartBloc(context.read<KpiRepository>())..add(
+                  FetchSpesialOrderPartData(),
+                ), // Event awal untuk isi tabel [cite: 10, 11]
           ),
           BlocProvider(
             create: (context) => NavigationBloc()

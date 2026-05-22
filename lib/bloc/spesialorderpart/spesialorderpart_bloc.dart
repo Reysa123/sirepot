@@ -37,5 +37,39 @@ class SpesialOrderPartBloc
         );
       }
     });
+    // 2. Handler Baru untuk Search Data
+    on<SearchSpesialOrderPartData>((event, emit) async {
+      final currentState = state;
+      if (currentState is SpesialOrderPartLoaded) {
+        emit(SpesialOrderPartLoading());
+        try {
+          // Silakan sesuaikan method repository Anda untuk menerima query pencarian, contoh:
+          final data = await repository.fetchSpesialOrder(0, pageSize);
+          // Filter dummy jika repository belum mendukung pencarian (opsional):
+          final filteredData = data
+              .where(
+                (item) => item.policeNo.toLowerCase().contains(
+                  event.query.toLowerCase(),
+                ),
+              )
+              .toList();
+
+          emit(
+            SpesialOrderPartLoaded(
+              data: filteredData, // Gunakan hasil filter
+              sa: currentState.sa,
+              sales: currentState.sales,
+              vin: currentState.vin,
+              model: currentState.model,
+              currentPage: 0,
+              hasReachedMax:
+                  true, // Set true karena hasil search biasanya fixed
+            ),
+          );
+        } catch (e) {
+          emit(SpesialOrderPartError("Gagal mencari data.${e.toString()}"));
+        }
+      }
+    });
   }
 }

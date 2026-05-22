@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/cr7/cr7bloc.dart';
+import 'package:sirepot/bloc/cr7/cr7event.dart';
 import 'package:sirepot/bloc/cr7/cr7state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +15,13 @@ class WidgetD extends StatelessWidget {
     return BlocBuilder<Cr7Bloc, Cr7State>(
       builder: (context, state) {
         if (state is Cr7Loading) {
-          return const Center(child: CircularProgressIndicator());
+          return Expanded(
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (state is Cr7Error) {
+          var a = state.message;
+          return Expanded(child: Center(child: Text(a)));
         }
         if (state is Cr7Loaded) {
           return Padding(
@@ -23,7 +30,7 @@ class WidgetD extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(),
+                _buildFilterSection(context, state.sa, state.month),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -49,12 +56,16 @@ class WidgetD extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildFilterSection(
+    BuildContext ctx,
+    List<String> sa,
+    List<String> month,
+  ) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("SA", ['a', 'b', 'c'], (v) {}),
-        _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
+        _filterDropdown("SA", sa, (v) {}),
+        _filterDropdown("Month", month, (v) {}),
 
         SizedBox(
           height: 43,
@@ -77,6 +88,8 @@ class WidgetD extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
+            onSubmitted: (value) =>
+                ctx.read<Cr7Bloc>().add(SearchCr7Data(value)),
           ),
         ),
       ],
