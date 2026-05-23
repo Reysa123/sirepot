@@ -13,42 +13,50 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       // Menggunakan background color abu-abu terang agar Card terlihat menonjol
       //backgroundColor: Colors.grey[100],
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              //color: Colors.red,
-              image: DecorationImage(
-                image: AssetImage("images/background.jpg"),
-                fit: BoxFit
-                    .fill, // Menyesuaikan gambar agar menutupi seluruh layar
-              ),
-            ),
-            child: Column(
-              children: [
-                // Header tetap di paling atas
-                _buildHeader(),
-
-                // Row untuk Sidebar dan Main Content dibungkus Expanded
-                // agar mengambil sisa tinggi layar yang tersedia
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // SIDEBAR
-                      _buildSidebar(context, state.selectedIndex),
-
-                      // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
-                      Expanded(child: _getMenuWidget(state.selectedIndex)),
-                    ],
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                width: width > 1200 ? width : 1200,
+                height: height > 580 ? height : 580,
+                decoration: const BoxDecoration(
+                  //color: Colors.red,
+                  image: DecorationImage(
+                    image: AssetImage("images/background.jpg"),
+                    fit: BoxFit
+                        .fill, // Menyesuaikan gambar agar menutupi seluruh layar
                   ),
                 ),
-              ],
+                child: Column(
+                  children: [
+                    // Header tetap di paling atas
+                    _buildHeader(),
+
+                    // Row untuk Sidebar dan Main Content dibungkus Expanded
+                    // agar mengambil sisa tinggi layar yang tersedia
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // SIDEBAR
+                          _buildSidebar(context, state.selectedIndex),
+
+                          // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
+                          Expanded(child: _getMenuWidget(state.selectedIndex)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
@@ -222,7 +230,7 @@ class DashboardPage extends StatelessWidget {
           ),
         ),
         tileColor: isSelected
-            ? Colors.red.withOpacity(0.3)
+            ? Colors.red.withAlpha(3)
             : Colors.transparent,
         onTap: () {
           // Kirim event ke NavigationBloc

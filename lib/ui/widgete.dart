@@ -54,8 +54,10 @@ class WidgetE extends StatelessWidget {
     return Row(
       spacing: 15,
       children: [
-       _filterDropdown("SA", state.selectedSa, state.sa, (v) {
-          ctx.read<SpesialOrderPartBloc>().add(FilterSpesialOrderPartData(sa: v));
+        _filterDropdown("SA", state.selectedSa, state.sa, (v) {
+          ctx.read<SpesialOrderPartBloc>().add(
+            FilterSpesialOrderPartData(sa: v),
+          );
         }),
 
         // _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
@@ -164,7 +166,7 @@ class WidgetE extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -219,9 +221,9 @@ class ServiceReminderSource extends DataTableSource {
       cells: [
         DataCell(Text("${index + 1}")),
         DataCell(Text(item.policeNo)),
-        DataCell(Text(item.model)),
-        DataCell(Text(item.namaPelanggan)),
+        DataCell(Text(item.sa)),
         DataCell(Text(item.noHp)),
+        DataCell(Text(item.namapart)),
         DataCell(Text(item.eta)),
         DataCell(Text(item.ata)),
         DataCell(
