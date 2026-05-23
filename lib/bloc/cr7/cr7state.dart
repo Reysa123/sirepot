@@ -1,4 +1,3 @@
-
 import 'package:sirepot/model/service_reminder.dart';
 
 abstract class Cr7State {}
@@ -10,20 +9,36 @@ class Cr7Loading extends Cr7State {}
 class Cr7Loaded extends Cr7State {
   final List<CR7> data;
   final int currentPage;
-final List<String> sa;
+  final List<String> sa;
   final List<String> month;
   final bool hasReachedMax;
-
+  final String? selectedSa;
+  final String? selectedMonth;
   Cr7Loaded({
     required this.data,
     required this.sa,
     required this.month,
     this.currentPage = 0,
     this.hasReachedMax = false,
+    this.selectedSa,
+    this.selectedMonth,
   });
+  Cr7Loaded copyWith({
+    List<String>? sa,
+    List<String>? month,
+    List<CR7>? data,
+    String? selectedSa,
+    String? selectedMonth,
+  }) {
+    return Cr7Loaded(
+      sa: sa ?? this.sa,
+      month: month ?? this.month,
+      data: data ?? this.data,
+      selectedSa: selectedSa ?? this.selectedSa,
+      selectedMonth: selectedMonth ?? this.selectedMonth,
+    );
+  }
 }
-
-
 
 class Cr7Error extends Cr7State {
   final String message;

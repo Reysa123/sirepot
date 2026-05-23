@@ -24,7 +24,7 @@ class WidgetE extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(context, state.sa),
+                _buildFilterSection(context, state),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -50,11 +50,13 @@ class WidgetE extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(BuildContext ctx, List<String> dp1) {
+  Widget _buildFilterSection(BuildContext ctx, SpesialOrderPartLoaded state) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("SA", dp1, (v) {}),
+       _filterDropdown("SA", state.selectedSa, state.sa, (v) {
+          ctx.read<SpesialOrderPartBloc>().add(FilterSpesialOrderPartData(sa: v));
+        }),
 
         // _filterDropdown("Month", ['a', 'b', 'c'], (v) {}),
         SizedBox(
@@ -150,6 +152,7 @@ class WidgetE extends StatelessWidget {
 
   Widget _filterDropdown(
     String label,
+    String? selectedValue, // Tambahan parameter nilai aktif
     List<String> list,
     Function(String? value) onKlik,
   ) {
@@ -169,6 +172,7 @@ class WidgetE extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          value: selectedValue,
           hint: Text(
             label,
             style: TextStyle(

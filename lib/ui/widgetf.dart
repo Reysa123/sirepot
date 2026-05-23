@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_bloc.dart';
+import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,7 +24,7 @@ class WidgetF extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(state.sales,state.vin,state.model),
+                _buildFilterSection(context, state),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -49,14 +50,25 @@ class WidgetF extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(List<String> sales,List<String> vin,List<String> model,) {
+  Widget _buildFilterSection(BuildContext ctx, SpesialOrderPartLoaded state) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Sales", sales, (v) {}),
-
-        _filterDropdown("VIN", vin, (v) {}),
-        _filterDropdown("Model",model, (v) {}),
+        _filterDropdown("Sales", state.selectedSales, state.sales, (v) {
+          ctx.read<SpesialOrderPartBloc>().add(
+            FilterSpesialOrderPartData(sales: v),
+          );
+        }),
+        _filterDropdown("VIN", state.selectedVin, state.vin, (v) {
+          ctx.read<SpesialOrderPartBloc>().add(
+            FilterSpesialOrderPartData(vin: v),
+          );
+        }),
+        _filterDropdown("Model", state.selectedModel, state.model, (v) {
+          ctx.read<SpesialOrderPartBloc>().add(
+            FilterSpesialOrderPartData(model: v),
+          );
+        }),
         // SizedBox(
         //   height: 43,
         //   width: 200, // Memberi lebar tetap pada search bar
@@ -145,6 +157,7 @@ class WidgetF extends StatelessWidget {
 
   Widget _filterDropdown(
     String label,
+    String? selectedValue, // Tambahan parameter nilai aktif
     List<String> list,
     Function(String? value) onKlik,
   ) {
@@ -164,6 +177,7 @@ class WidgetF extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          value: selectedValue,
           hint: Text(
             label,
             style: TextStyle(

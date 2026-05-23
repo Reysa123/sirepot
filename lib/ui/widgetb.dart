@@ -28,10 +28,7 @@ class WidgetB extends StatelessWidget {
                 // FILTER & SEARCH AREA
                 _buildFilterSection(
                   context,
-                  state.sbe,
-                  state.month,
-                  state.repair,
-                  state.program,
+                  state
                 ),
                 const SizedBox(height: 8),
 
@@ -60,18 +57,23 @@ class WidgetB extends StatelessWidget {
 
   Widget _buildFilterSection(
     BuildContext ctx,
-    List<String> sbe,
-    List<String> month,
-    List<String> repair,
-    List<String> program,
+   KpiLoaded state
   ) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Repair Type", repair, (v) {}),
-        _filterDropdown("SBE", sbe, (v) {}),
-        _filterDropdown("Program Service", program, (v) {}),
-        _filterDropdown("Month", month, (v) {}),
+        _filterDropdown("Repair Type", state.selectedRepair, state.repair, (v) {
+          ctx.read<KpiBloc>().add(FilterKpiData(repair: v));
+        }),
+        _filterDropdown("SBE", state.selectedSbe, state.sbe, (v) {
+          ctx.read<KpiBloc>().add(FilterKpiData(sbe: v));
+        }),
+        _filterDropdown("Program Service", state.selectedProgram, state.program, (v) {
+          ctx.read<KpiBloc>().add(FilterKpiData(program: v));
+        }),
+        _filterDropdown("Month", state.selectedMonth, state.month, (v) {
+          ctx.read<KpiBloc>().add(FilterKpiData(month: v));
+        }),
         InkWell(
           onTap: () {},
           child: Container(
@@ -192,6 +194,7 @@ class WidgetB extends StatelessWidget {
 
   Widget _filterDropdown(
     String label,
+    String? selectedValue, // Tambahan parameter untuk nilai aktif
     List<String> list,
     Function(String? value) onKlik,
   ) {
@@ -211,6 +214,7 @@ class WidgetB extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          value: selectedValue,
           hint: Text(
             label,
             style: TextStyle(

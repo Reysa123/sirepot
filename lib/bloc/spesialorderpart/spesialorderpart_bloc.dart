@@ -1,10 +1,12 @@
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_state.dart';
+import 'package:sirepot/model/service_reminder.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SpesialOrderPartBloc
     extends Bloc<SpesialOrderPartEvent, SpesialOrderPartState> {
+      List<SpesialOrderPart> _masterData = [];
   final KpiRepository repository;
   final int pageSize = 13; // Sesuai baris yang ditampilkan di PDF
 
@@ -13,16 +15,16 @@ class SpesialOrderPartBloc
       emit(SpesialOrderPartLoading());
       try {
         emit(SpesialOrderPartLoading());
-        final data = await repository.fetchSpesialOrder(event.page, pageSize);
+         _masterData = await repository.fetchSpesialOrder(event.page, pageSize);
         final List<String> sa = ["Budi", "Iwan", "Wati"];
         final List<String> sales = ["Ari", "Wawan", "Fadli"];
         final List<String> vin = ["MHC"];
         final List<String> model = ["Model A", "Model B"];
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
-        bool reachedMax = data.length < pageSize;
+        bool reachedMax = _masterData.length < pageSize;
         emit(
           SpesialOrderPartLoaded(
-            data: data,
+            data: _masterData,
             sa: sa,
             sales: sales,
             vin: vin,
@@ -35,6 +37,32 @@ class SpesialOrderPartBloc
         emit(
           SpesialOrderPartError("Gagal memuat data dashboard.${e.toString()}"),
         );
+      }
+    });
+    on<FilterSpesialOrderPartData>((event, emit) {
+      if (state is SpesialOrderPartLoaded) {
+        final currentState = state as SpesialOrderPartLoaded;
+
+        // Ambil nilai SA yang baru, atau gunakan yang lama
+        final selectedSa = event.sa ?? currentState.selectedSa;
+
+        // Filter _masterData
+        List<SpesialOrderPart> filteredList = _masterData.where((item) {
+          bool matchSa = true;
+
+          if (selectedSa != null && selectedSa.isNotEmpty) {
+            // Sesuaikan properti 'saName' dengan struktur model SpesialOrderPart Anda
+            // matchSa = item.saName == selectedSa; 
+          }
+
+          return matchSa;
+        }).toList();
+
+        // Update state
+        emit(currentState.copyWith(
+          selectedSa: selectedSa,
+          data: filteredList,
+        ));
       }
     });
     // 2. Handler Baru untuk Search Data

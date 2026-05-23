@@ -79,5 +79,32 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         }
       }
     });
+    on<FilterKpiData>((event, emit) async {
+      if (state is KpiLoaded) {
+        final currentState = state as KpiLoaded;
+
+        // Update state dengan pilihan dropdown yang baru
+        final updatedRepair = event.repair ?? currentState.selectedRepair;
+        final updatedSbe = event.sbe ?? currentState.selectedSbe;
+        final updatedProgram = event.program ?? currentState.selectedProgram;
+        final updatedMonth = event.month ?? currentState.selectedMonth;
+
+        // Tampilkan loading jika perlu
+        // emit(KpiLoading());
+
+        // Lakukan filter data (Bisa dari lokal/List master, atau API Fetching ulang)
+        // List<ServiceReminder> filteredData = dataMaster.where((item) { ... }).toList();
+
+        emit(
+          currentState.copyWith(
+            selectedRepair: updatedRepair,
+            selectedSbe: updatedSbe,
+            selectedProgram: updatedProgram,
+            selectedMonth: updatedMonth,
+            // data: filteredData, // Masukkan data yang sudah di-filter di sini
+          ),
+        );
+      }
+    });
   }
 }

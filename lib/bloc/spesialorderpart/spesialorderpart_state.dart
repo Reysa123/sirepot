@@ -14,7 +14,10 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
   final List<String> vin;
   final List<String> model;
   final bool hasReachedMax;
-
+  final String? selectedSa;
+  final String? selectedSales;
+  final String? selectedVin;
+  final String? selectedModel;
   SpesialOrderPartLoaded({
     required this.data,
     required this.sa,
@@ -23,7 +26,34 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
     required this.model,
     this.currentPage = 0,
     this.hasReachedMax = false,
+    this.selectedSa,
+    this.selectedSales,
+    this.selectedVin,
+    this.selectedModel,
   });
+  SpesialOrderPartLoaded copyWith({
+    List<String>? sa,
+    List<String>? sales,
+    List<String>? vin,
+    List<String>? model,
+    List<SpesialOrderPart>? data,
+    String? selectedSa,
+    String? selectedSales,
+    String? selectedVin,
+    String? selectedModel,
+  }) {
+    return SpesialOrderPartLoaded(
+      sa: sa ?? this.sa,
+      sales: sales ?? this.sales,
+      vin: vin ?? this.vin,
+      model: model ?? this.model,
+      data: data ?? this.data,
+      selectedSa: selectedSa ?? this.selectedSa,
+      selectedSales: selectedSales ?? this.selectedSales,
+      selectedVin: selectedVin ?? this.selectedVin,
+      selectedModel: selectedModel ?? this.selectedModel,
+    );
+  }
 }
 
 class SpesialOrderPartError extends SpesialOrderPartState {

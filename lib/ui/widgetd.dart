@@ -30,7 +30,7 @@ class WidgetD extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(context, state.sa, state.month),
+                _buildFilterSection(context, state),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -56,16 +56,16 @@ class WidgetD extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(
-    BuildContext ctx,
-    List<String> sa,
-    List<String> month,
-  ) {
+  Widget _buildFilterSection(BuildContext ctx, Cr7Loaded state) {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("SA", sa, (v) {}),
-        _filterDropdown("Month", month, (v) {}),
+        _filterDropdown("SA", state.selectedSa, state.sa, (v) {
+          ctx.read<Cr7Bloc>().add(FilterCr7Data(sa: v));
+        }),
+        _filterDropdown("Month", state.selectedMonth, state.month, (v) {
+          ctx.read<Cr7Bloc>().add(FilterCr7Data(month: v));
+        }),
 
         SizedBox(
           height: 43,
@@ -157,6 +157,7 @@ class WidgetD extends StatelessWidget {
 
   Widget _filterDropdown(
     String label,
+    String? selectedValue, // Tambahkan parameter untuk nilai yang aktif
     List<String> list,
     Function(String? value) onKlik,
   ) {
@@ -176,6 +177,7 @@ class WidgetD extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          value: selectedValue,
           hint: Text(
             label,
             style: TextStyle(
