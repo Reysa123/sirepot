@@ -53,7 +53,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
               );
 
           final matchSa =
-              selectedMonth == null ||
+              selectedSa == null ||
               item.sa!.toLowerCase().contains(event.sa!.toLowerCase());
 
           return matchSa && matchMonth;
