@@ -74,7 +74,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         final updatedSbe = event.sbe == "null" ? null : event.sbe;
         final updatedProgram = event.program == "null" ? null : event.program;
         final updatedMonth = event.month == "null" ? null : event.month;
-
+        final updateNopol = event.nopol ?? event.nopol;
         //Tampilkan loading jika perlu
         //emit(KpiLoading());
 
@@ -87,9 +87,11 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
           final umonth =
               updatedMonth == null ||
               item.month!.toLowerCase().contains(updatedMonth.toLowerCase());
-          final uunopol =
-              unopol == "" || item.policeNo!.toLowerCase().contains(unopol);
-          return urep && uprog && umonth && uunopol;
+
+          final unopol =
+              updateNopol == null ||
+              item.policeNo!.toLowerCase().contains(event.nopol!.toLowerCase());
+          return urep && uprog && umonth && unopol;
         }).toList();
 
         emit(
@@ -98,6 +100,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
             selectedSbe: updatedSbe,
             selectedProgram: updatedProgram,
             selectedMonth: updatedMonth,
+            selectedNopol: updateNopol,
             data: filteredData, // Masukkan data yang sudah di-filter di sini
           ),
         );

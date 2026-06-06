@@ -40,7 +40,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
         // Tangkap nilai dropdown yang baru di-klik, atau gunakan yang lama jika null
         final selectedSa = event.sa == "null" ? null : event.sa;
         final selectedMonth = event.month == "null" ? null : event.month;
-
+        final selectNopol = event.nopol ?? event.nopol;
         // Lakukan filter pada _masterData
         final filteredList = _masterData.where((item) {
           final matchMonth =
@@ -55,15 +55,17 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
           final matchSa =
               selectedSa == null ||
               item.sa!.toLowerCase().contains(event.sa!.toLowerCase());
-
-          return matchSa && matchMonth;
+          final matchNopol =
+              selectNopol == null ||
+              item.policeNo!.toLowerCase().contains(event.nopol!.toLowerCase());
+          return matchSa && matchMonth && matchNopol;
         }).toList();
-
         // Update state menggunakan copyWith dengan data hasil filter
         emit(
           currentState.copyWith(
             selectedSa: selectedSa,
             selectedMonth: selectedMonth,
+            selectedNopol: selectNopol,
             data: filteredList,
           ),
         );

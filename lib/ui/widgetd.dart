@@ -62,10 +62,14 @@ class WidgetD extends StatelessWidget {
       spacing: 15,
       children: [
         _filterDropdown("SA", state.selectedSa, state.sa, (v) {
-          ctx.read<Cr7Bloc>().add(FilterCr7Data(sa: v));
+          ctx.read<Cr7Bloc>().add(
+            FilterCr7Data(sa: v, month: state.selectedMonth,nopol: state.selectedNopol),
+          );
         }),
         _filterDropdown("Month", state.selectedMonth, state.month, (v) {
-          ctx.read<Cr7Bloc>().add(FilterCr7Data(month: v));
+          ctx.read<Cr7Bloc>().add(
+            FilterCr7Data(month: v, sa: state.selectedSa),
+          );
         }),
 
         SizedBox(
@@ -90,7 +94,9 @@ class WidgetD extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
             onSubmitted: (value) =>
-                ctx.read<Cr7Bloc>().add(SearchCr7Data(value)),
+                 ctx.read<Cr7Bloc>().add(
+            FilterCr7Data(month: state.selectedMonth, sa: state.selectedSa,nopol: value)
+          ),
           ),
         ),
       ],
@@ -238,7 +244,7 @@ class ServiceReminderSource extends DataTableSource {
       cells: [
         DataCell(Text("${index + 1}")),
         DataCell(Text(item.policeNo ?? "")),
-        DataCell(Text(item.category??"")),
+        DataCell(Text(item.category ?? "")),
         DataCell(Text(item.namaPelanggan ?? "")),
         DataCell(Text(item.perbaikanCr7 ?? "")),
         DataCell(Text(item.estimasi ?? "")),

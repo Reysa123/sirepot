@@ -8,8 +8,9 @@ class FetchCr7Data extends Cr7Event {
 class FilterCr7Data extends Cr7Event {
   final String? sa;
   final String? month;
+  final String? nopol;
 
-  FilterCr7Data({this.sa, this.month});
+  FilterCr7Data({this.sa, this.month,this.nopol});
 }
 
 class SearchCr7Data extends Cr7Event {

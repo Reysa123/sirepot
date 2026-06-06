@@ -14,6 +14,7 @@ class Cr7Loaded extends Cr7State {
   final bool hasReachedMax;
   final String? selectedSa;
   final String? selectedMonth;
+  final String? selectedNopol;
   Cr7Loaded({
     required this.data,
     required this.sa,
@@ -22,6 +23,7 @@ class Cr7Loaded extends Cr7State {
     this.hasReachedMax = false,
     this.selectedSa,
     this.selectedMonth,
+    this.selectedNopol,
   });
   Cr7Loaded copyWith({
     List<String>? sa,
@@ -29,6 +31,7 @@ class Cr7Loaded extends Cr7State {
     List<CR7>? data,
     String? selectedSa,
     String? selectedMonth,
+    String? selectedNopol,
   }) {
     return Cr7Loaded(
       sa: sa ?? this.sa,
@@ -36,6 +39,7 @@ class Cr7Loaded extends Cr7State {
       data: data ?? this.data,
       selectedSa: selectedSa ?? this.selectedSa,
       selectedMonth: selectedMonth ?? this.selectedMonth,
+      selectedNopol: selectedNopol ?? this.selectedNopol,
     );
   }
 }

@@ -18,6 +18,7 @@ class KpiLoaded extends KpiState {
   final String? selectedMonth;
   final String? selectedRepair;
   final String? selectedProgram;
+  final String? selectedNopol;
   KpiLoaded({
     required this.data,
     required this.sbe,
@@ -30,6 +31,7 @@ class KpiLoaded extends KpiState {
     this.selectedMonth,
     this.selectedRepair,
     this.selectedProgram,
+    this.selectedNopol,
   });
 
   KpiLoaded copyWith({
@@ -42,6 +44,7 @@ class KpiLoaded extends KpiState {
     String? selectedMonth,
     String? selectedRepair,
     String? selectedProgram,
+    String? selectedNopol,
   }) {
     return KpiLoaded(
       sbe: sbe ?? this.sbe,
@@ -53,6 +56,7 @@ class KpiLoaded extends KpiState {
       selectedMonth: selectedMonth ?? this.selectedMonth,
       selectedRepair: selectedRepair ?? this.selectedRepair,
       selectedProgram: selectedProgram ?? this.selectedProgram,
+      selectedNopol:selectedNopol??this.selectedNopol,
     );
   }
 }

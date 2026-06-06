@@ -54,10 +54,6 @@ class WidgetB extends StatelessWidget {
   }
 
   Widget _buildFilterSection(BuildContext ctx, KpiLoaded state) {
-    print(state.selectedMonth.toString());
-    print(state.selectedProgram.toString());
-    print(state.selectedRepair.toString());
-    print(state.selectedSbe.toString());
     return Row(
       spacing: 15,
       children: [
@@ -68,6 +64,7 @@ class WidgetB extends StatelessWidget {
               sbe: state.selectedSbe,
               program: state.selectedProgram,
               month: state.selectedMonth,
+              nopol: state.selectedNopol,
             ),
           );
         }),
@@ -78,6 +75,7 @@ class WidgetB extends StatelessWidget {
               sbe: v,
               program: state.selectedProgram,
               month: state.selectedMonth,
+              nopol: state.selectedNopol,
             ),
           );
         }),
@@ -91,6 +89,7 @@ class WidgetB extends StatelessWidget {
                 repair: state.selectedRepair,
                 sbe: state.selectedSbe,
                 program: v,
+                nopol: state.selectedNopol,
                 month: state.selectedMonth,
               ),
             );
@@ -103,6 +102,7 @@ class WidgetB extends StatelessWidget {
               sbe: state.selectedSbe,
               program: state.selectedProgram,
               month: v,
+              nopol: state.selectedNopol,
             ),
           );
         }),
@@ -156,7 +156,15 @@ class WidgetB extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
             onSubmitted: (value) {
-              ctx.read<KpiBloc>().add(SearchKpiData(value));
+              ctx.read<KpiBloc>().add(
+                FilterKpiData(
+                  repair: state.selectedRepair,
+                  sbe: state.selectedSbe,
+                  program: state.selectedProgram,
+                  month: state.selectedMonth,
+                  nopol: value,
+                ),
+              );
             },
           ),
         ),
