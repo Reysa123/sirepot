@@ -6,6 +6,7 @@ import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 
 class WidgetB extends StatelessWidget {
   const WidgetB({super.key});
@@ -26,10 +27,7 @@ class WidgetB extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(
-                  context,
-                  state
-                ),
+                _buildFilterSection(context, state),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -55,24 +53,58 @@ class WidgetB extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(
-    BuildContext ctx,
-   KpiLoaded state
-  ) {
+  Widget _buildFilterSection(BuildContext ctx, KpiLoaded state) {
+    print(state.selectedMonth.toString());
+    print(state.selectedProgram.toString());
+    print(state.selectedRepair.toString());
+    print(state.selectedSbe.toString());
     return Row(
       spacing: 15,
       children: [
         _filterDropdown("Repair Type", state.selectedRepair, state.repair, (v) {
-          ctx.read<KpiBloc>().add(FilterKpiData(repair: v));
+          ctx.read<KpiBloc>().add(
+            FilterKpiData(
+              repair: v,
+              sbe: state.selectedSbe,
+              program: state.selectedProgram,
+              month: state.selectedMonth,
+            ),
+          );
         }),
         _filterDropdown("SBE", state.selectedSbe, state.sbe, (v) {
-          ctx.read<KpiBloc>().add(FilterKpiData(sbe: v));
+          ctx.read<KpiBloc>().add(
+            FilterKpiData(
+              repair: state.selectedRepair,
+              sbe: v,
+              program: state.selectedProgram,
+              month: state.selectedMonth,
+            ),
+          );
         }),
-        _filterDropdown("Program Service", state.selectedProgram, state.program, (v) {
-          ctx.read<KpiBloc>().add(FilterKpiData(program: v));
-        }),
+        _filterDropdown(
+          "Program Service",
+          state.selectedProgram,
+          state.program,
+          (v) {
+            ctx.read<KpiBloc>().add(
+              FilterKpiData(
+                repair: state.selectedRepair,
+                sbe: state.selectedSbe,
+                program: v,
+                month: state.selectedMonth,
+              ),
+            );
+          },
+        ),
         _filterDropdown("Month", state.selectedMonth, state.month, (v) {
-          ctx.read<KpiBloc>().add(FilterKpiData(month: v));
+          ctx.read<KpiBloc>().add(
+            FilterKpiData(
+              repair: state.selectedRepair,
+              sbe: state.selectedSbe,
+              program: state.selectedProgram,
+              month: v,
+            ),
+          );
         }),
         InkWell(
           onTap: () {},
@@ -194,52 +226,65 @@ class WidgetB extends StatelessWidget {
 
   Widget _filterDropdown(
     String label,
-    String? selectedValue, // Tambahan parameter untuk nilai aktif
+    String? selectedValue,
     List<String> list,
     Function(String? value) onKlik,
   ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12), // Border melengkung modern
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+      padding: const EdgeInsets.all(4),
+      width: 140,
+      child: DropDownTextField(
+        dropDownItemCount: 12,
+        // controller: controller,
+        initialValue: selectedValue,
+        clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
+        // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
+        dropDownIconProperty: IconProperty(
+          icon: Icons.keyboard_arrow_down_rounded,
+          color: Colors.red,
+          size: 20,
+        ),
+        clearIconProperty: IconProperty(
+          icon: Icons.clear,
+          color: Colors.red,
+          size: 20,
+        ),
+        listTextStyle: TextStyle(fontSize: 11),
+        textStyle: TextStyle(fontSize: 11),
+        // 4. Transformasi List<String> Anda menjadi List<DropDownValueModel>
+        dropDownList: list.map((item) {
+          return DropDownValueModel(name: item, value: item);
+        }).toList(),
+
+        // 5. Logika ketika item dipilih ATAU dihapus (clear)
+        onChanged: (dynamic value) {
+          if (value == null || value == "") {
+            //  controller.clearDropDown;
+            onKlik("null"); // Terpanggil saat tombol clear ditekan
+          } else if (value is DropDownValueModel) {
+            onKlik(value.value.toString()); // Terpanggil saat item dipilih
+          }
+        },
+
+        // 6. Validasi Form (Optional, return null jika aman)
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Wajib dipilih";
+          }
+          return null;
+        },
+
+        // 7. Styling Input & Dekorasi
+        textFieldDecoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          border: const OutlineInputBorder(),
+          labelText: label,
+          labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 8,
           ),
-        ],
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedValue,
-          hint: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade700,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          icon: const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: Colors.red,
-          ),
-          style: const TextStyle(color: Colors.black, fontSize: 12),
-          // Tambahkan value dan items sesuai kebutuhan logic Anda nantinya
-          items: list
-              .map(
-                (data) => DropdownMenuItem(
-                  value: data,
-                  child: Text(data, style: TextStyle(fontSize: 10)),
-                ),
-              )
-              .toList(),
-          onChanged: (value) {
-            onKlik(value);
-          },
         ),
       ),
     );
@@ -260,13 +305,13 @@ class ServiceReminderSource extends DataTableSource {
     return DataRow2(
       cells: [
         DataCell(Text("${index + 1}")),
-        DataCell(Text(item.policeNo)),
-        DataCell(Text(item.model)),
-        DataCell(Text(item.namaPelanggan)),
-        DataCell(Text(item.noHp)),
-        DataCell(Text(item.lastService.toString())),
-        DataCell(Text(item.lastJob)),
-        DataCell(Text(item.program)),
+        DataCell(Text(item.policeNo!)),
+        DataCell(Text(item.model!)),
+        DataCell(Text(item.namaPelanggan!)),
+        DataCell(Text(item.nomerTelephone.toString())),
+        DataCell(Text(item.lastServiceTgl.toString())),
+        DataCell(Text(item.lastJob!)),
+        DataCell(Text(item.program!)),
         DataCell(
           Row(
             children: [

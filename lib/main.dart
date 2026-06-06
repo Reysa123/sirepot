@@ -10,8 +10,20 @@ import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_bloc.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/dashboardpage.dart';
-
-void main() {
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://szfcyvyqvmzvyiflrpps.supabase.co/',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6ZmN5dnlxdm16dnlpZmxycHBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NzkwNjQsImV4cCI6MjA5NjA1NTA2NH0.PKEoe8iULQ7JtScLmAniO8ODcbIMV57n7Ak6-8a_Mc4',
+  );
+  await Supabase.instance.client.auth.signInWithPassword(
+    email: 'deskontara2@gmail.com',
+    password: 'Sarmagedon1',
+  );
+  await initializeDateFormatting('id', null);
   runApp(const MyApp());
 }
 

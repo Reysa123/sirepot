@@ -1,35 +1,24 @@
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
+import 'package:sirepot/model/service_reminder.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class KpiBloc extends Bloc<KpiEvent, KpiState> {
   final KpiRepository repository;
   final int pageSize = 13; // Sesuai baris yang ditampilkan di PDF
-
+  late List<ServiceReminder> data;
+  String unopol = "";
   KpiBloc(this.repository) : super(KpiInitial()) {
     on<FetchKpiData>((event, emit) async {
       emit(KpiLoading());
       try {
         emit(KpiLoading());
-        final data = await repository.fetchKpiData(event.page, pageSize);
+        data = await repository.fetchKpiData(event.page, pageSize);
         final sbe = ["z", "r", "t"];
-        final program = ["h", "f", "s"];
-        final repair = ["a", "b", "c"];
-        final month = [
-          "Januari",
-          "Februari",
-          "Maret",
-          "April",
-          "Mei",
-          "Juni",
-          "Juli",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
+        final program = await repository.fetchProgram();
+        final repair = await repository.fetchRepair();
+        final month = await repository.fetchMonth();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
         emit(
@@ -48,30 +37,27 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
       }
     });
     on<SearchKpiData>((event, emit) async {
-      final currentState = state;
-      if (currentState is KpiLoaded) {
-        emit(KpiLoading());
+      if (state is KpiLoaded) {
+        final currentState = state as KpiLoaded;
+        unopol = event.query.toLowerCase();
         try {
           emit(KpiLoading());
-          final data = await repository.fetchKpiData(0, pageSize);
-          final filteredData = data
+
+          final filteredData = currentState.data
               .where(
-                (item) => item.policeNo.toLowerCase().contains(
+                (item) => item.policeNo!.toLowerCase().contains(
                   event.query.toLowerCase(),
                 ),
               )
               .toList();
-          // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
-          bool reachedMax = data.length < pageSize;
+
           emit(
-            KpiLoaded(
+            currentState.copyWith(
               data: filteredData,
               sbe: currentState.sbe,
               month: currentState.month,
               repair: currentState.repair,
               program: currentState.program,
-              currentPage: 0,
-              hasReachedMax: reachedMax,
             ),
           );
         } catch (e) {
@@ -84,16 +70,27 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         final currentState = state as KpiLoaded;
 
         // Update state dengan pilihan dropdown yang baru
-        final updatedRepair = event.repair ?? currentState.selectedRepair;
-        final updatedSbe = event.sbe ?? currentState.selectedSbe;
-        final updatedProgram = event.program ?? currentState.selectedProgram;
-        final updatedMonth = event.month ?? currentState.selectedMonth;
+        final updatedRepair = event.repair == "null" ? null : event.repair;
+        final updatedSbe = event.sbe == "null" ? null : event.sbe;
+        final updatedProgram = event.program == "null" ? null : event.program;
+        final updatedMonth = event.month == "null" ? null : event.month;
 
-        // Tampilkan loading jika perlu
-        // emit(KpiLoading());
+        //Tampilkan loading jika perlu
+        //emit(KpiLoading());
 
-        // Lakukan filter data (Bisa dari lokal/List master, atau API Fetching ulang)
-        // List<ServiceReminder> filteredData = dataMaster.where((item) { ... }).toList();
+        //Lakukan filter data (Bisa dari lokal/List master, atau API Fetching ulang)
+        final filteredData = data.where((item) {
+          final urep =
+              updatedRepair == null || item.repairType!.contains(updatedRepair);
+          final uprog =
+              updatedProgram == null || item.program!.contains(updatedProgram);
+          final umonth =
+              updatedMonth == null ||
+              item.month!.toLowerCase().contains(updatedMonth.toLowerCase());
+          final uunopol =
+              unopol == "" || item.policeNo!.toLowerCase().contains(unopol);
+          return urep && uprog && umonth && uunopol;
+        }).toList();
 
         emit(
           currentState.copyWith(
@@ -101,7 +98,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
             selectedSbe: updatedSbe,
             selectedProgram: updatedProgram,
             selectedMonth: updatedMonth,
-            // data: filteredData, // Masukkan data yang sudah di-filter di sini
+            data: filteredData, // Masukkan data yang sudah di-filter di sini
           ),
         );
       }

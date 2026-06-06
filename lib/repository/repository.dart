@@ -1,411 +1,68 @@
 import 'package:sirepot/model/service_reminder.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class KpiRepository {
-  //final supabase = Supabase.instance.client;
+  final supabase = Supabase.instance.client;
 
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
-    final response = [
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-    ];
-    // final response = await supabase
-    //     .from('service_reminders')
-    //     .select()
-    //     .range(from, to)
-    //     .order('last_service', ascending: false);
+    final response = await supabase.from('mra').select();
 
-    return (response).map((e) => ServiceReminder.fromMap(e)).toList();
+    return (response).map((e) => ServiceReminder.fromJson(e)).toList();
+  }
+
+  Future<List<String>> fetchProgram() async {
+    List<Map<String, dynamic>> response = await supabase
+        .from('program_service')
+        .select();
+
+    return response.map((e) => e['PROGRAM'].toString()).toList();
+  }
+
+  Future<List<String>> fetchRepair() async {
+    List<Map<String, dynamic>> response = await supabase
+        .from('repair_type')
+        .select();
+
+    return response.map((e) => e['REPAIR TYPE'].toString()).toList();
   }
 
   Future<List<ServiceReminder>> fetchServiceRemainder(
     int page,
     int pageSize,
   ) async {
-    final response = [
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'no_hp': '086555566677',
-        'last_service': DateTime.now(),
-        'last_job': '3-6-2026',
-        'program': 'CK',
-      },
-    ];
-    // final response = await supabase
-    //     .from('service_reminders')
-    //     .select()
-    //     .range(from, to)
-    //     .order('last_service', ascending: false);
+    final response = await supabase.from('mra').select();
 
-    return (response).map((e) => ServiceReminder.fromMap(e)).toList();
+    return (response).map((e) => ServiceReminder.fromJson(e)).toList();
   }
 
   Future<List<CR7>> fetchcr7(int page, int pageSize) async {
-    final response = [
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'perbaikancr7': 'Ganti Filter',
-        'estimasi': '2.000.000',
-        'sparepart': 'Filter',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'perbaikancr7': 'Ganti Filter',
-        'estimasi': '2.000.000',
-        'sparepart': 'Filter',
-      },
-      {
-        'police_no': 'DK123GG',
-        'model': 'TOYOTA',
-        'nama_pelanggan': 'I WAYAN SUDARMA',
-        'perbaikancr7': 'Ganti Filter',
-        'estimasi': '2.000.000',
-        'sparepart': 'Filter',
-      },
-    ];
-    // final response = await supabase
-    //     .from('service_reminders')
-    //     .select()
-    //     .range(from, to)
-    //     .order('last_service', ascending: false);
+    final response = await supabase.from('cr7').select();
 
-    return (response).map((e) => CR7.fromMap(e)).toList();
+    return (response).map((e) => CR7.fromJson(e)).toList();
+  }
+
+  Future<List<String>> fetchSa() async {
+    List<Map<String, dynamic>> response = await supabase.from('sa').select();
+
+    return response.map((e) => e['SA'].toString()).toList();
+  }
+
+  Future<List<String>> fetchMonth() async {
+    final month = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+    return month;
   }
 
   Future<List<SpesialOrderPart>> fetchSpesialOrder(
