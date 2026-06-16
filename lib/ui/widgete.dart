@@ -249,7 +249,16 @@ class ServiceReminderSource extends DataTableSource {
                 color: Colors.green,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final result = await showDialog<StatusItem>(
+                    context: context,
+                    builder: (_) => const CallStatusDialog(),
+                  );
+
+                  if (result != null) {
+                    debugPrint(result.title);
+                  }
+                },
                 icon: const FaIcon(FontAwesomeIcons.phoneVolume, size: 16),
                 color: Colors.red,
               ),
@@ -268,4 +277,246 @@ class ServiceReminderSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+class StatusItem {
+  final String category;
+  final String title;
+
+  const StatusItem({required this.category, required this.title});
+}
+
+class CallStatusDialog extends StatefulWidget {
+  const CallStatusDialog({super.key});
+
+  @override
+  State<CallStatusDialog> createState() => _CallStatusDialogState();
+}
+
+class _CallStatusDialogState extends State<CallStatusDialog> {
+  StatusItem? selectedStatus;
+
+  final List<StatusItem> notConnected = [
+    const StatusItem(category: 'Tidak Tersambung', title: 'Salah Sambung'),
+    const StatusItem(category: 'Tidak Tersambung', title: 'Tidak Aktif'),
+  ];
+
+  final List<StatusItem> connected = [
+    const StatusItem(category: 'Tersambung', title: 'Booking'),
+    const StatusItem(category: 'Tersambung', title: 'Sibuk Orang'),
+    const StatusItem(category: 'Tersambung', title: 'Sibuk Kendaraan'),
+    const StatusItem(category: 'Tersambung', title: 'Kend. Jarang dipakai'),
+    const StatusItem(category: 'Tersambung', title: 'Tlp. Tidak dijawab'),
+    const StatusItem(category: 'Tersambung', title: 'Kend. Sudah dijual'),
+    const StatusItem(category: 'Tersambung', title: 'Belum ada Biaya'),
+    const StatusItem(category: 'Tersambung', title: 'Operasional Luar'),
+    const StatusItem(category: 'Tersambung', title: 'Konfirmasi Pihak lain'),
+    const StatusItem(
+      category: 'Tersambung',
+      title: 'Kend. Sudah servis AT Lain',
+    ),
+    const StatusItem(
+      category: 'Tersambung',
+      title: 'Kend. Sudah servis Bengkel lain',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final allItems = [...notConnected, ...connected];
+
+    return Dialog(
+      backgroundColor: const Color(0xffC60000),
+      insetPadding: const EdgeInsets.all(20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: 900,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: RadioGroup<StatusItem>(
+              groupValue: selectedStatus,
+              onChanged: (value) {
+                setState(() {
+                  selectedStatus = value;
+                });
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "STATUS FOLLOW UP",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: _buildCategoryCard(
+                          title: "Tidak Tersambung",
+                          icon: Icons.phone_disabled,
+                          children: notConnected,
+                        ),
+                      ),
+
+                      const SizedBox(width: 16),
+
+                      Expanded(
+                        flex: 6,
+                        child: _buildCategoryCard(
+                          title: "Tersambung",
+                          icon: Icons.phone_in_talk,
+                          children: connected,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      selectedStatus == null
+                          ? "Belum ada status dipilih"
+                          : "Status terpilih : ${selectedStatus!.title}",
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("BATAL"),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.red,
+                        ),
+                        onPressed: selectedStatus == null
+                            ? null
+                            : () {
+                                Navigator.pop(context, selectedStatus);
+                              },
+                        icon: const Icon(Icons.check),
+                        label: const Text("SIMPAN"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryCard({
+    required String title,
+    required IconData icon,
+    required List<StatusItem> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white24, width: 1.5),
+      ),
+      child: Column(
+        children: [
+          Container(
+            // height: 20,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(10),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: children.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+
+                    child: Container(
+                      height: 40,
+                      margin: const EdgeInsets.only(bottom: 8),
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(14),
+                      // ),
+                      child: RadioListTile<StatusItem>(
+                        //contentPadding: EdgeInsets.only(bottom: 10),
+                        value: item,
+                        title: Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                        activeColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
