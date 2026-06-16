@@ -16,9 +16,9 @@ class SpesialOrderPartBloc
       try {
         emit(SpesialOrderPartLoading());
         _masterData = await repository.fetchSpesialOrder(event.page, pageSize);
-        final List<String> sa = ["Budi", "Iwan", "Wati"];
+        final List<String> sa = await repository.fetchSa();
         final List<String> sales = ["Ari", "Wawan", "Fadli"];
-        final List<String> vin = ["MHCTYT1234567890"];
+        final List<String> vin = await repository.fetchVin();
         final List<String> model = ["Model A", "Model B"];
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = _masterData.length < pageSize;
@@ -44,20 +44,20 @@ class SpesialOrderPartBloc
         final currentState = state as SpesialOrderPartLoaded;
 
         // Ambil nilai SA yang baru, atau gunakan yang lama
-        final selectedSa = event.sa ?? currentState.selectedSa;
-        final selectedSales = event.sales ?? currentState.selectedSales;
-        final selectedVin = event.vin ?? currentState.selectedVin;
+        final selectedSa = event.sa == "null" ? null : event.sa;
+        final selectedSales = event.sales == "null" ? null : event.sales;
+        final selectedVin = event.vin == "null" ? null : event.vin;
         final selectedModel = event.model ?? currentState.selectedModel;
+        final selectNopol = event.nopol ?? event.nopol;
         // Filter _masterData
         List<SpesialOrderPart> filteredList = _masterData.where((item) {
-          bool matchSa = true;
-
-          if (selectedSa != null && selectedSa.isNotEmpty) {
-            // Sesuaikan properti 'saName' dengan struktur model SpesialOrderPart Anda
-            // matchSa = item.saName == selectedSa;
-          }
-
-          return matchSa;
+          final matchSa =
+              selectedSa == null ||
+              item.sa.toLowerCase().contains(event.sa!.toLowerCase());
+          final matchNopol =
+              selectNopol == null ||
+              item.policeNo.toLowerCase().contains(event.nopol!.toLowerCase());
+          return matchSa && matchNopol;
         }).toList();
 
         // Update state
@@ -67,6 +67,7 @@ class SpesialOrderPartBloc
             selectedSales: selectedSales,
             selectedModel: selectedModel,
             selectedVin: selectedVin,
+            selectedNopol: selectNopol,
             data: filteredList,
           ),
         );

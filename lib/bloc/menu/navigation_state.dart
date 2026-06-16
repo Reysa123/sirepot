@@ -1,4 +1,6 @@
-class NavigationState {
+abstract class NavigationState {}
+class NavigationStates extends NavigationState {
   final int selectedIndex;
-  NavigationState(this.selectedIndex);
+  NavigationStates(this.selectedIndex);
 }
+class Loading extends NavigationState{}

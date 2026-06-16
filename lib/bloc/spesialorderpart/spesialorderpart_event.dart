@@ -10,7 +10,8 @@ class FilterSpesialOrderPartData extends SpesialOrderPartEvent {
   final String? sales;
   final String? vin;
   final String? model;
-  FilterSpesialOrderPartData({this.sa, this.sales, this.vin, this.model});
+  final String? nopol;
+  FilterSpesialOrderPartData({this.sa, this.sales, this.vin, this.model,this.nopol});
 }
 
 class SearchSpesialOrderPartData extends SpesialOrderPartEvent {

@@ -15,50 +15,61 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    ImageProvider image1 = AssetImage("images/background.jpg");
+    ImageProvider image2 = AssetImage("images/sireport.png"),
+        image3 = AssetImage("images/agung.png");
     return Scaffold(
       // Menggunakan background color abu-abu terang agar Card terlihat menonjol
       //backgroundColor: Colors.grey[100],
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
-                width: width > 1200 ? width : 1200,
-                height: height > 580 ? height : 580,
-                decoration: const BoxDecoration(
-                  //color: Colors.red,
-                  image: DecorationImage(
-                    image: AssetImage("images/background.jpg"),
-                    fit: BoxFit
-                        .fill, // Menyesuaikan gambar agar menutupi seluruh layar
+          if (state is Loading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is NavigationStates) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  width: width > 1200 ? width : 1200,
+                  height: height > 580 ? height : 580,
+                  decoration: BoxDecoration(
+                    //color: Colors.red,
+                    image: DecorationImage(
+                      image: image1,
+                      fit: BoxFit
+                          .fill, // Menyesuaikan gambar agar menutupi seluruh layar
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Header tetap di paling atas
+                      _buildHeader(image2, image3),
+
+                      // Row untuk Sidebar dan Main Content dibungkus Expanded
+                      // agar mengambil sisa tinggi layar yang tersedia
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // SIDEBAR
+                            _buildSidebar(context, state.selectedIndex),
+
+                            // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
+                            Expanded(
+                              child: _getMenuWidget(state.selectedIndex),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  children: [
-                    // Header tetap di paling atas
-                    _buildHeader(),
-
-                    // Row untuk Sidebar dan Main Content dibungkus Expanded
-                    // agar mengambil sisa tinggi layar yang tersedia
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // SIDEBAR
-                          _buildSidebar(context, state.selectedIndex),
-
-                          // MAIN CONTENT dibungkus Expanded agar lebarnya memenuhi sisa layar
-                          Expanded(child: _getMenuWidget(state.selectedIndex)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Center(child: Text('Tidak ditemukan data'));
+          }
         },
       ),
     );
@@ -166,7 +177,7 @@ class DashboardPage extends StatelessWidget {
     }
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(ImageProvider image2, ImageProvider image3) {
     return Container(
       height: 100,
       width: double.infinity,
@@ -181,7 +192,7 @@ class DashboardPage extends StatelessWidget {
             decoration: BoxDecoration(
               //color: Colors.red,
               image: DecorationImage(
-                image: AssetImage("images/sireport.png"),
+                image: image2,
                 fit: BoxFit
                     .fill, // Menyesuaikan gambar agar menutupi seluruh layar
               ),
@@ -193,7 +204,7 @@ class DashboardPage extends StatelessWidget {
             decoration: BoxDecoration(
               //color: Colors.red,
               image: DecorationImage(
-                image: AssetImage("images/agung.png"),
+                image: image3,
                 fit: BoxFit
                     .fill, // Menyesuaikan gambar agar menutupi seluruh layar
               ),
@@ -229,9 +240,7 @@ class DashboardPage extends StatelessWidget {
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
-        tileColor: isSelected
-            ? Colors.red.withAlpha(3)
-            : Colors.transparent,
+        tileColor: isSelected ? Colors.red.withAlpha(3) : Colors.transparent,
         onTap: () {
           // Kirim event ke NavigationBloc
           context.read<NavigationBloc>().add(ChangeMenuEvent(index));

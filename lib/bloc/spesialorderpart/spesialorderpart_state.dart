@@ -18,6 +18,7 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
   final String? selectedSales;
   final String? selectedVin;
   final String? selectedModel;
+  final String? selectedNopol;
   SpesialOrderPartLoaded({
     required this.data,
     required this.sa,
@@ -30,6 +31,8 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
     this.selectedSales,
     this.selectedVin,
     this.selectedModel,
+     this.selectedNopol,
+
   });
   SpesialOrderPartLoaded copyWith({
     List<String>? sa,
@@ -41,6 +44,7 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
     String? selectedSales,
     String? selectedVin,
     String? selectedModel,
+     String? selectedNopol,
   }) {
     return SpesialOrderPartLoaded(
       sa: sa ?? this.sa,
@@ -52,6 +56,7 @@ class SpesialOrderPartLoaded extends SpesialOrderPartState {
       selectedSales: selectedSales ?? this.selectedSales,
       selectedVin: selectedVin ?? this.selectedVin,
       selectedModel: selectedModel ?? this.selectedModel,
+      selectedNopol: selectedNopol ?? this.selectedNopol,
     );
   }
 }

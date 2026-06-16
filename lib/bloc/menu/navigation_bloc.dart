@@ -3,9 +3,11 @@ import 'navigation_event.dart';
 import 'navigation_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  NavigationBloc() : super(NavigationState(0)) {
+  NavigationBloc() : super(NavigationStates(0)) {
     on<ChangeMenuEvent>((event, emit) {
-      emit(NavigationState(event.index));
+      emit(Loading());
+      Future.delayed(Duration(seconds: 2));
+      emit(NavigationStates(event.index));
     });
   }
 }

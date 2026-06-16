@@ -47,6 +47,12 @@ class KpiRepository {
     return response.map((e) => e['SA'].toString()).toList();
   }
 
+  Future<List<String>> fetchVin() async {
+    List<Map<String, dynamic>> response = await supabase.from('vin').select();
+
+    return response.map((e) => e['Norangka'].toString()).toList();
+  }
+
   Future<List<String>> fetchMonth() async {
     final month = [
       "Januari",
