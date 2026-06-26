@@ -1,19 +1,20 @@
-
 class ServiceReminder {
-  final int no;
+  final String? no;
   final String? policeNo;
   final String? model;
   final String? repairType;
-  final String? lastServiceTgl; // Disimpan sebagai String, atau bisa di-parse ke DateTime jika formatnya konsisten
+  final String?
+  lastServiceTgl; // Disimpan sebagai String, atau bisa di-parse ke DateTime jika formatnya konsisten
   final String? lastJob;
   final String? program;
   final String? month;
   final String? namaPelanggan;
   final String? contactPerson;
-  final int? nomerTelephone;
+  final String? nomerTelephone;
   final String? ncs;
   final String? potensi;
   final String? cai;
+  final String? area;
 
   ServiceReminder({
     required this.no,
@@ -30,11 +31,12 @@ class ServiceReminder {
     this.ncs,
     this.potensi,
     this.cai,
+    this.area,
   });
 
   // Membuat salinan objek dengan beberapa perubahan nilai (Optional, berguna untuk state management)
   ServiceReminder copyWith({
-    int? no,
+    String? no,
     String? policeNo,
     String? model,
     String? repairType,
@@ -44,10 +46,11 @@ class ServiceReminder {
     String? month,
     String? namaPelanggan,
     String? contactPerson,
-    int? nomerTelephone,
+    String? nomerTelephone,
     String? ncs,
     String? potensi,
     String? cai,
+    String? area,
   }) {
     return ServiceReminder(
       no: no ?? this.no,
@@ -64,27 +67,37 @@ class ServiceReminder {
       ncs: ncs ?? this.ncs,
       potensi: potensi ?? this.potensi,
       cai: cai ?? this.cai,
+      area: area ?? this.area,
     );
   }
 
   // Mengubah Map (JSON) menjadi Objek Dart
   factory ServiceReminder.fromJson(Map<String, dynamic> json) {
+    // Ambil data mentah LAST SERVICE (TGL)
+    final rawDate = json['LAST SERVICE (TGL)'];
+    DateTime? parsedDate;
+
+    // Validasi data tanggal secara dinamis
+    if (rawDate != null && rawDate != 0 && rawDate != '#N/A') {
+      if (rawDate is String) {
+        parsedDate = DateTime.tryParse(rawDate);
+      }
+    }
     return ServiceReminder(
-      no: json['NO'] is String ? int.parse(json['NO']) : json['NO'] as int,
+      no: "${json['NO'] ?? 0}",
       policeNo: json['POLICE NO'] as String?,
       model: json['MODEL'] as String?,
       repairType: json['REPAIR TYPE'] as String?,
-      lastServiceTgl: json['LAST SERVICE (TGL)'] as String?,
+      lastServiceTgl: "${json['LAST SERVICE (TGL)']}",
       lastJob: json['LAST JOB'] as String?,
       program: json['PROGRAM'] as String?,
       month: json['MONTH'] as String?,
       namaPelanggan: json['NAMA PELANGGAN'] as String?,
       contactPerson: json['CONTACT PERSON'] as String?,
-      nomerTelephone: json['NOMER TELEPHONE'] is String 
-          ? int.tryParse(json['NOMER TELEPHONE']) 
-          : json['NOMER TELEPHONE'] as int?,
+      nomerTelephone: "${json['NOMER TELEPHONE'] ?? 0}",
       ncs: json['NCS'] as String?,
-      potensi: json['POTENSI'] as String?,
+      potensi: json['POTENSI SERVICE'] as String?,
+      area: json['AREA'] as String?,
       cai: json['CAI'] as String?,
     );
   }
@@ -106,6 +119,7 @@ class ServiceReminder {
       'NCS': ncs,
       'POTENSI': potensi,
       'CAI': cai,
+      'AREA': area,
     };
   }
 }
@@ -211,7 +225,6 @@ class CR7 {
     };
   }
 }
-
 
 class SpesialOrderPart {
   final String policeNo;

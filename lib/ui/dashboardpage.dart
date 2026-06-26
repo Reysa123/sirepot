@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_event.dart';
 import 'package:sirepot/bloc/menu/navigation_state.dart';
+import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetb.dart';
 import 'package:sirepot/ui/widgetd.dart';
 import 'package:sirepot/ui/widgete.dart';
@@ -70,6 +71,11 @@ class DashboardPage extends StatelessWidget {
           } else {
             return Center(child: Text('Tidak ditemukan data'));
           }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          KpiRepository().fetchKpiData(0, 0);
         },
       ),
     );
