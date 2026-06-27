@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class KpiBloc extends Bloc<KpiEvent, KpiState> {
   final KpiRepository repository;
+  late KpiLoaded currentState;
   final int pageSize = 13; // Sesuai baris yang ditampilkan di PDF
   late List<ServiceReminder> data;
   String unopol = "";
@@ -15,12 +16,21 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
       try {
         emit(KpiLoading());
         data = await repository.fetchKpiData(event.page, pageSize);
-        final sbe = ["z", "r", "t"];
+        final sbe = await repository.fetchPotensi();
         final program = await repository.fetchProgram();
         final repair = await repository.fetchRepair();
         final month = await repository.fetchMonth();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
+        currentState = KpiLoaded(
+          data: data,
+          sbe: sbe,
+          month: month,
+          repair: repair,
+          program: program,
+          currentPage: event.page,
+          hasReachedMax: reachedMax,
+        );
         emit(
           KpiLoaded(
             data: data,
@@ -38,21 +48,23 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
     });
     on<SearchKpiData>((event, emit) async {
       if (state is KpiLoaded) {
-        final currentState = state as KpiLoaded;
-        unopol = event.query.toLowerCase();
+        final currentStates = state as KpiLoaded;
+        final query = event.query.toLowerCase();
         try {
           emit(KpiLoading());
 
-          final filteredData = currentState.data
-              .where(
-                (item) => item.policeNo!.toLowerCase().contains(
-                  event.query.toLowerCase(),
-                ),
-              )
-              .toList();
+          final filteredData = currentStates.data.where((item) {
+            final policeNo = item.policeNo?.toLowerCase() ?? '';
+            final namaPelanggan = item.namaPelanggan?.toLowerCase() ?? '';
+            final potensi = item.potensi?.toLowerCase() ?? '';
+
+            return policeNo.contains(query) ||
+                namaPelanggan.contains(query) ||
+                potensi.contains(query);
+          }).toList();
 
           emit(
-            currentState.copyWith(
+            currentStates.copyWith(
               data: filteredData,
               sbe: currentState.sbe,
               month: currentState.month,
@@ -67,7 +79,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
     });
     on<FilterKpiData>((event, emit) async {
       if (state is KpiLoaded) {
-        final currentState = state as KpiLoaded;
+        //final currentState = state as KpiLoaded;
 
         // Update state dengan pilihan dropdown yang baru
         final updatedRepair = event.repair == "null" ? null : event.repair;
@@ -87,11 +99,13 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
           final umonth =
               updatedMonth == null ||
               item.month!.toLowerCase().contains(updatedMonth.toLowerCase());
-
+          final upotensi =
+              updatedSbe == null ||
+              item.potensi!.toLowerCase().contains(updatedSbe.toLowerCase());
           final unopol =
               updateNopol == null ||
               item.policeNo!.toLowerCase().contains(event.nopol!.toLowerCase());
-          return urep && uprog && umonth && unopol;
+          return urep && uprog && umonth && unopol && upotensi;
         }).toList();
 
         emit(

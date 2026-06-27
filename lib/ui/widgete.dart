@@ -252,7 +252,7 @@ class ServiceReminderSource extends DataTableSource {
                 onPressed: () async {
                   final result = await showDialog<StatusItem>(
                     context: context,
-                    builder: (_) => const CallStatusDialog(),
+                    builder: (_) => const CallStatusDialog2(),
                   );
 
                   if (result != null) {
@@ -286,14 +286,14 @@ class StatusItem {
   const StatusItem({required this.category, required this.title});
 }
 
-class CallStatusDialog extends StatefulWidget {
-  const CallStatusDialog({super.key});
+class CallStatusDialog2 extends StatefulWidget {
+  const CallStatusDialog2({super.key});
 
   @override
-  State<CallStatusDialog> createState() => _CallStatusDialogState();
+  State<CallStatusDialog2> createState() => _CallStatusDialogState();
 }
 
-class _CallStatusDialogState extends State<CallStatusDialog> {
+class _CallStatusDialogState extends State<CallStatusDialog2> {
   StatusItem? selectedStatus;
 
   final List<StatusItem> notConnected = [

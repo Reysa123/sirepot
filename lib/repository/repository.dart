@@ -1,20 +1,21 @@
 import 'dart:convert';
 
+import 'package:flutter/rendering.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class KpiRepository {
   final supabase = Supabase.instance.client;
-
+  List<ServiceReminder> response = [];
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
     //final response = await supabase.from('mra').select();
-    List<ServiceReminder> response = [];
+
     //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
     final res = Uri.parse(
       "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?&sheets=0&columns=15",
     );
-    print(res.toString());
+    // print(res.toString());
     try {
       final data = await http.get(res);
       //print(data.body);
@@ -23,18 +24,22 @@ class KpiRepository {
       if (data.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON string
         final List<dynamic> jsonData = jsonDecode(data.body);
-        print(jsonData.toList().toString());
+        // print(jsonData.toList().toString());
         response = jsonData.map((e) => ServiceReminder.fromJson(e)).toList();
-        print(response.toList().toString());
+        //print(response.toList().toString());
       } else {
         // Handle specific server failure scenarios
         throw Exception('Failed to load data. Status code: ${data.statusCode}');
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
     return response;
     //return (response).map((e) => ServiceReminder.fromJson(e)).toList();
+  }
+
+  Future<List<String>> fetchPotensi() async {
+    return response.map((v) => v.potensi!).toSet().toList();
   }
 
   Future<List<String>> fetchProgram() async {

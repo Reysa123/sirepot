@@ -7,6 +7,7 @@ import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:sirepot/ui/widgetwhatsapp.dart';
 
 class WidgetB extends StatelessWidget {
   const WidgetB({super.key});
@@ -16,7 +17,7 @@ class WidgetB extends StatelessWidget {
     return BlocBuilder<KpiBloc, KpiState>(
       builder: (context, state) {
         if (state is KpiLoading) {
-          return Expanded(
+          return SizedBox.expand(
             child: const Center(child: CircularProgressIndicator()),
           );
         }
@@ -68,7 +69,7 @@ class WidgetB extends StatelessWidget {
             ),
           );
         }),
-        _filterDropdown("SBE", state.selectedSbe, state.sbe, (v) {
+        _filterDropdown("Potensi Service", state.selectedSbe, state.sbe, (v) {
           ctx.read<KpiBloc>().add(
             FilterKpiData(
               repair: state.selectedRepair,
@@ -156,15 +157,7 @@ class WidgetB extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
             onSubmitted: (value) {
-              ctx.read<KpiBloc>().add(
-                FilterKpiData(
-                  repair: state.selectedRepair,
-                  sbe: state.selectedSbe,
-                  program: state.selectedProgram,
-                  month: state.selectedMonth,
-                  nopol: value,
-                ),
-              );
+              ctx.read<KpiBloc>().add(SearchKpiData(value));
             },
           ),
         ),
@@ -202,7 +195,7 @@ class WidgetB extends StatelessWidget {
           dataRowHeight: 30, // Tinggi baris sedikit diperbesar untuk kenyamanan
           headingRowHeight: 35,
           horizontalMargin: 12,
-          minWidth: 1000,
+          minWidth: 1300,
           fit: FlexFit.loose,
 
           // Konfigurasi Pagination
@@ -219,12 +212,16 @@ class WidgetB extends StatelessWidget {
           columns: const [
             DataColumn2(label: Text('NO'), fixedWidth: 50),
             DataColumn2(label: Text('Police No'), size: ColumnSize.L),
+            DataColumn2(label: Text('NCS'), size: ColumnSize.L),
+
             DataColumn2(label: Text('Model'), size: ColumnSize.M),
             DataColumn2(label: Text('Nama Pelanggan'), size: ColumnSize.L),
             DataColumn2(label: Text('NO HP'), size: ColumnSize.M),
             DataColumn(label: Text('Last Service')),
             DataColumn(label: Text('Last Job')),
+            DataColumn2(label: Text('Potensi'), size: ColumnSize.L),
             DataColumn(label: Text('Program')),
+            DataColumn2(label: Text('Area'), size: ColumnSize.L),
             DataColumn(label: Text('Action')),
           ],
         ),
@@ -314,17 +311,30 @@ class ServiceReminderSource extends DataTableSource {
       cells: [
         DataCell(Text("${index + 1}")),
         DataCell(Text(item.policeNo!)),
+        DataCell(Text(item.ncs!)),
         DataCell(Text(item.model!)),
         DataCell(Text(item.namaPelanggan!)),
         DataCell(Text(item.nomerTelephone.toString())),
         DataCell(Text(item.lastServiceTgl.toString())),
         DataCell(Text(item.lastJob!)),
+        DataCell(Text(item.potensi!)),
         DataCell(Text(item.program!)),
+        DataCell(Text(item.area!)),
         DataCell(
           Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (_) => WhatsappWidget(
+                      nmPlg: item.namaPelanggan ?? "Pelanggan",
+                      nohp: item.nomerTelephone ?? '0',
+                      nopol: item.policeNo ?? "No Plat",
+                      model: item.model ?? "No Model",
+                    ),
+                  );
+                },
                 icon: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
                 color: Colors.green,
               ),

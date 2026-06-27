@@ -74,31 +74,23 @@ class ServiceReminder {
   // Mengubah Map (JSON) menjadi Objek Dart
   factory ServiceReminder.fromJson(Map<String, dynamic> json) {
     // Ambil data mentah LAST SERVICE (TGL)
-    final rawDate = json['LAST SERVICE (TGL)'];
-    DateTime? parsedDate;
-
-    // Validasi data tanggal secara dinamis
-    if (rawDate != null && rawDate != 0 && rawDate != '#N/A') {
-      if (rawDate is String) {
-        parsedDate = DateTime.tryParse(rawDate);
-      }
-    }
+    //print(json);
     return ServiceReminder(
       no: "${json['NO'] ?? 0}",
-      policeNo: json['POLICE NO'] as String?,
-      model: json['MODEL'] as String?,
-      repairType: json['REPAIR TYPE'] as String?,
+      policeNo: json['POLICE NO'].toString(),
+      model: json['MODEL'].toString(),
+      repairType: json['REPAIR TYPE'].toString(),
       lastServiceTgl: "${json['LAST SERVICE (TGL)']}",
-      lastJob: json['LAST JOB'] as String?,
-      program: json['PROGRAM'] as String?,
-      month: json['MONTH'] as String?,
-      namaPelanggan: json['NAMA PELANGGAN'] as String?,
-      contactPerson: json['CONTACT PERSON'] as String?,
+      lastJob: json['LAST JOB'].toString(),
+      program: json['PROGRAM'].toString(),
+      month: json['MONTH'].toString(),
+      namaPelanggan: json['NAMA PELANGGAN'].toString(),
+      contactPerson: json['CONTACT PERSON'].toString(),
       nomerTelephone: "${json['NOMER TELEPHONE'] ?? 0}",
-      ncs: json['NCS'] as String?,
-      potensi: json['POTENSI SERVICE'] as String?,
-      area: json['AREA'] as String?,
-      cai: json['CAI'] as String?,
+      ncs: json['NCS'].toString(),
+      potensi: json['POTENSI SERVICE'].toString(),
+      area: json['AREA'].toString(),
+      cai: json['CAI'].toString(),
     );
   }
 
@@ -176,25 +168,25 @@ class CR7 {
     return CR7(
       no: json['No'] as int,
       serviceOrder: json['Service Order'] as int?,
-      sa: json['SA'] as String?,
-      teknisi: json['Teknisi'] as String?,
-      fo: json['FO'] as String?,
-      policeNo: json['Police No'] as String?,
-      month: json['Month'] as String?,
-      category: json['Category'] as String?,
-      perbaikanCr7: json['Perbaikan CR7'] as String?,
-      estimasiJob: json['Estimasi Job'] as String?,
-      sparePart: json['SPARE PART'] as String?,
-      totalPart: json['TOTAL PART'] as String?,
-      estimasi: json['Estimasi'] as String?,
-      kondisiBan: json['Kondisi Ban'] as String?,
-      kondisiAki: json['Kondisi Aki'] as String?,
-      statusDp: json['Status DP'] as String?,
-      norangka: json['Norangka'] as String?,
-      namaPelanggan: json['Nama Pelanggan'] as String?,
+      sa: json['SA'].toString(),
+      teknisi: json['Teknisi'].toString(),
+      fo: json['FO'].toString(),
+      policeNo: json['Police No'].toString(),
+      month: json['Month'].toString(),
+      category: json['Category'].toString(),
+      perbaikanCr7: json['Perbaikan CR7'].toString(),
+      estimasiJob: json['Estimasi Job'].toString(),
+      sparePart: json['SPARE PART'].toString(),
+      totalPart: json['TOTAL PART'].toString(),
+      estimasi: json['Estimasi'].toString(),
+      kondisiBan: json['Kondisi Ban'].toString(),
+      kondisiAki: json['Kondisi Aki'].toString(),
+      statusDp: json['Status DP'].toString(),
+      norangka: json['Norangka'].toString(),
+      namaPelanggan: json['Nama Pelanggan'].toString(),
       telephoneCp: json['Telephone CP'] as int?,
-      cai: json['CAI'] as String?,
-      omset: json['OMSET'] as String?,
+      cai: json['CAI'].toString(),
+      omset: json['OMSET'].toString(),
     );
   }
 

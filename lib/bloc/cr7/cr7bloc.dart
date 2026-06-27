@@ -74,17 +74,20 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
     on<SearchCr7Data>((event, emit) async {
       if (state is Cr7Loaded) {
         final currentState = state as Cr7Loaded;
-        unopol = event.query.toLowerCase();
+        final query = event.query.toLowerCase();
         try {
           emit(Cr7Loading());
 
-          final filteredData = currentState.data
-              .where(
-                (item) => item.policeNo!.toLowerCase().contains(
-                  event.query.toLowerCase(),
-                ),
-              )
-              .toList();
+          final filteredData = currentState.data.where((item) {
+            final policeNo = item.policeNo?.toLowerCase() ?? '';
+            final namaPelanggan = item.namaPelanggan?.toLowerCase() ?? '';
+            final potensi = item.perbaikanCr7?.toLowerCase() ?? '';
+            final part = item.sparePart?.toLowerCase() ?? '';
+            return policeNo.contains(query) ||
+                namaPelanggan.contains(query) ||
+                potensi.contains(query) ||
+                part.contains(query);
+          }).toList();
 
           emit(
             currentState.copyWith(

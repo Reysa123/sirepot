@@ -41,6 +41,7 @@ dependencies:
   supabase_flutter: ^2.12.4
   dropdown_textfield: ^1.2.0
   intl: ^0.20.2
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

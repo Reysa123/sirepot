@@ -16,13 +16,13 @@ class WidgetD extends StatelessWidget {
     return BlocBuilder<Cr7Bloc, Cr7State>(
       builder: (context, state) {
         if (state is Cr7Loading) {
-          return Expanded(
+          return SizedBox.expand(
             child: const Center(child: CircularProgressIndicator()),
           );
         }
         if (state is Cr7Error) {
           var a = state.message;
-          return Expanded(child: Center(child: Text(a)));
+          return SizedBox.expand(child: Center(child: Text(a)));
         }
         if (state is Cr7Loaded) {
           return Padding(
@@ -82,7 +82,7 @@ class WidgetD extends StatelessWidget {
           child: TextField(
             style: TextStyle(fontSize: 12),
             decoration: InputDecoration(
-              hintText: "Search Police No",
+              hintText: "Search...",
               suffixIcon: Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
@@ -97,13 +97,8 @@ class WidgetD extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
-            onSubmitted: (value) => ctx.read<Cr7Bloc>().add(
-              FilterCr7Data(
-                month: state.selectedMonth,
-                sa: state.selectedSa,
-                nopol: value,
-              ),
-            ),
+            onSubmitted: (value) =>
+                ctx.read<Cr7Bloc>().add(SearchCr7Data(value)),
           ),
         ),
       ],
@@ -268,7 +263,7 @@ class ServiceReminderSource extends DataTableSource {
                 onPressed: () async {
                   final result = await showDialog<StatusItem>(
                     context: context,
-                    builder: (_) => const CallStatusDialog(),
+                    builder: (_) => const CallStatusDialog1(),
                   );
 
                   if (result != null) {
@@ -302,14 +297,14 @@ class StatusItem {
   const StatusItem({required this.category, required this.title});
 }
 
-class CallStatusDialog extends StatefulWidget {
-  const CallStatusDialog({super.key});
+class CallStatusDialog1 extends StatefulWidget {
+  const CallStatusDialog1({super.key});
 
   @override
-  State<CallStatusDialog> createState() => _CallStatusDialogState();
+  State<CallStatusDialog1> createState() => _CallStatusDialogState();
 }
 
-class _CallStatusDialogState extends State<CallStatusDialog> {
+class _CallStatusDialogState extends State<CallStatusDialog1> {
   StatusItem? selectedStatus;
 
   final List<StatusItem> notConnected = [
