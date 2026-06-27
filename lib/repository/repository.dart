@@ -10,6 +10,7 @@ class KpiRepository {
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
     //final response = await supabase.from('mra').select();
     List<ServiceReminder> response = [];
+    //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
     final res = Uri.parse(
       "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?&sheets=0&columns=15",
     );
