@@ -38,6 +38,37 @@ class KpiRepository {
     //return (response).map((e) => ServiceReminder.fromJson(e)).toList();
   }
 
+  Future<String> addKpiData(int row, List<String> value) async {
+    //final response = await supabase.from('mra').select();
+
+    String respon = "";
+    //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
+    final res = Uri.parse(
+      "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?sheets=0&columns=13&columns=15&rows=$row&value=${value[0]}&value=${value[1]}",
+    );
+    // print(res.toString());
+    try {
+      final data = await http.get(res);
+      //print(data.body);
+
+      //print(data.body);
+      if (data.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON string
+        final jsonData = jsonDecode(data.body);
+        print(jsonData.toString());
+        respon = jsonData.first['message'];
+        //print(response.toList().toString());
+      } else {
+        // Handle specific server failure scenarios
+        throw Exception('Failed to load data. Status code: ${data.statusCode}');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return respon;
+    //return (response).map((e) => ServiceReminder.fromJson(e)).toList();
+  }
+
   Future<List<String>> fetchPotensi() async {
     return response.map((v) => v.potensi!).toSet().toList();
   }

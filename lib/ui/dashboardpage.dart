@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_event.dart';
 import 'package:sirepot/bloc/menu/navigation_state.dart';
-import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetb.dart';
+import 'package:sirepot/ui/widgetc.dart';
 import 'package:sirepot/ui/widgetd.dart';
 import 'package:sirepot/ui/widgete.dart';
 import 'package:sirepot/ui/widgetf.dart';
@@ -71,11 +71,6 @@ class DashboardPage extends StatelessWidget {
           } else {
             return Center(child: Text('Tidak ditemukan data'));
           }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          KpiRepository().fetchKpiData(0, 0);
         },
       ),
     );
@@ -166,12 +161,7 @@ class DashboardPage extends StatelessWidget {
       case 1:
         return WidgetB();
       case 2:
-        return const Center(
-          child: Text(
-            "Summary Remainder",
-            style: TextStyle(color: Colors.white),
-          ),
-        );
+        return KpiTableWidget();
       case 3:
         return WidgetD();
       case 4:

@@ -7,6 +7,7 @@ import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
 
 class WidgetB extends StatelessWidget {
@@ -340,13 +341,21 @@ class ServiceReminderSource extends DataTableSource {
               ),
               IconButton(
                 onPressed: () async {
-                  final result = await showDialog<StatusItem>(
+                  final result = await showDialog<List<dynamic>>(
                     context: context,
                     builder: (_) => const CallStatusDialog(),
                   );
 
                   if (result != null) {
-                    debugPrint(result.title);
+                    debugPrint(result[0].title);
+                    debugPrint(result[0].category);
+                    debugPrint(result[1]);
+                    //addKpiData(rows,[ncs,cai])
+                    await KpiRepository().addKpiData(index + 2, [
+                      result[1],
+                      result[0].title,
+                    ]);
+                    context.read<KpiBloc>().add(FetchKpiData());
                   }
                 },
                 icon: const FaIcon(FontAwesomeIcons.phoneVolume, size: 16),
@@ -384,8 +393,10 @@ class CallStatusDialog extends StatefulWidget {
 }
 
 class _CallStatusDialogState extends State<CallStatusDialog> {
+  SingleValueDropDownController dropDownController =
+      SingleValueDropDownController();
   StatusItem? selectedStatus;
-
+  String? ncs;
   final List<StatusItem> notConnected = [
     const StatusItem(category: 'Tidak Tersambung', title: 'Salah Sambung'),
     const StatusItem(category: 'Tidak Tersambung', title: 'Tidak Aktif'),
@@ -471,7 +482,66 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                     ],
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: 140,
+                    child: DropDownTextField(
+                      controller: dropDownController,
+                      dropDownItemCount: 4,
+                      clearOption: true,
+                      dropDownIconProperty: IconProperty(
+                        icon: Icons.keyboard_arrow_down_rounded,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      clearIconProperty: IconProperty(
+                        icon: Icons.clear,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      listTextStyle: const TextStyle(fontSize: 12),
+                      textStyle: const TextStyle(fontSize: 12),
+                      // Perbaikan: Memisahkan string array dengan benar
+                      dropDownList: const [
+                        DropDownValueModel(name: "TIKA", value: "TIKA"),
+                        DropDownValueModel(name: "DWI", value: "DWI"),
+                        DropDownValueModel(name: "FUAH", value: "FUAH"),
+                      ],
+                      onChanged: (dynamic value) {
+                        if (value is DropDownValueModel) {
+                          setState(() {
+                            ncs = value.value
+                                .toString(); // Update teks otomatis saat berganti nama PIC
+                          });
+                        } else {
+                          setState(() {
+                            ncs = "[Nama PIC]";
+                          });
+                        }
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Wajib dipilih";
+                        }
+                        return null;
+                      },
+                      textFieldDecoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                        labelText: 'PIC',
+                        labelStyle: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
 
                   Container(
                     width: double.infinity,
@@ -483,7 +553,7 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                     child: Text(
                       selectedStatus == null
                           ? "Belum ada status dipilih"
-                          : "Status terpilih : ${selectedStatus!.title}",
+                          : "Status terpilih : ${selectedStatus!.title}, PIC : $ncs",
                       style: const TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
@@ -511,10 +581,13 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.red,
                         ),
-                        onPressed: selectedStatus == null
+                        onPressed:
+                            selectedStatus == null ||
+                                ncs == "[Nama PIC]" ||
+                                ncs == null
                             ? null
                             : () {
-                                Navigator.pop(context, selectedStatus);
+                                Navigator.pop(context, [selectedStatus, ncs]);
                               },
                         icon: const Icon(Icons.check),
                         label: const Text("SIMPAN"),
