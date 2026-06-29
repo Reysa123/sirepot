@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/rendering.dart';
 import 'package:sirepot/model/service_reminder.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class KpiRepository {

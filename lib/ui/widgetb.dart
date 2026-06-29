@@ -620,7 +620,7 @@ class ServiceReminderSource extends DataTableSource {
             children: [
               IconButton(
                 onPressed: () async {
-                  final result = await showDialog(
+                   await showDialog(
                     context: context,
                     builder: (_) => WhatsappWidget(
                       nmPlg: item.namaPelanggan ?? "Pelanggan",
@@ -718,7 +718,7 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final allItems = [...notConnected, ...connected];
+   // final allItems = [...notConnected, ...connected];
 
     return Dialog(
       backgroundColor: const Color(0xffC60000),

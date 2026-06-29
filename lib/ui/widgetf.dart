@@ -337,7 +337,7 @@ class _CallStatusDialogState extends State<CallStatusDialog3> {
 
   @override
   Widget build(BuildContext context) {
-    final allItems = [...notConnected, ...connected];
+   // final allItems = [...notConnected, ...connected];
 
     return Dialog(
       backgroundColor: const Color(0xffC60000),
