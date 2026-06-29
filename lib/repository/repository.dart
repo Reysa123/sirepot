@@ -6,8 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class KpiRepository {
-  final supabase = Supabase.instance.client;
+  // final supabase = Supabase.instance.client;
   List<ServiceReminder> response = [];
+  List<CR7> list = [];
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
     //final response = await supabase.from('mra').select();
 
@@ -55,7 +56,7 @@ class KpiRepository {
       if (data.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON string
         final jsonData = jsonDecode(data.body);
-        print(jsonData.toString());
+        //print(jsonData.toString());
         respon = jsonData.first['message'];
         //print(response.toList().toString());
       } else {
@@ -74,46 +75,72 @@ class KpiRepository {
   }
 
   Future<List<String>> fetchProgram() async {
-    List<Map<String, dynamic>> response = await supabase
-        .from('program_service')
-        .select();
+    // List<Map<String, dynamic>> response = await supabase
+    //     .from('program_service')
+    //     .select();
 
-    return response.map((e) => e['PROGRAM'].toString()).toList();
+    return response.map((e) => e.program.toString()).toList().toSet().toList();
   }
 
   Future<List<String>> fetchRepair() async {
-    List<Map<String, dynamic>> response = await supabase
-        .from('repair_type')
-        .select();
+    // List<Map<String, dynamic>> response = await supabase
+    //     .from('repair_type')
+    //     .select();
 
-    return response.map((e) => e['REPAIR TYPE'].toString()).toList();
+    return response
+        .map((e) => e.repairType.toString())
+        .toList()
+        .toSet()
+        .toList();
   }
 
   Future<List<ServiceReminder>> fetchServiceRemainder(
     int page,
     int pageSize,
   ) async {
-    final response = await supabase.from('mra').select();
+    //final response = await supabase.from('mra').select();
 
-    return (response).map((e) => ServiceReminder.fromJson(e)).toList();
+    return (response);
   }
 
   Future<List<CR7>> fetchcr7(int page, int pageSize) async {
-    final response = await supabase.from('cr7').select();
+    //final response = await supabase.from('mra').select();
 
-    return (response).map((e) => CR7.fromJson(e)).toList();
+    //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
+    final res = Uri.parse(
+      "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?&sheets=1&columns=21",
+    );
+    // print(res.toString());
+    try {
+      final data = await http.get(res);
+      //print(data.body);
+
+      //print(data.body);
+      if (data.statusCode == 200) {
+        // If the server returns a 200 OK response, parse the JSON string
+        final List<dynamic> jsonData = jsonDecode(data.body);
+        // print(jsonData.toList().toString());
+        list = jsonData.map((e) => CR7.fromJson(e)).toList();
+        //print(response.toList().toString());
+      } else {
+        // Handle specific server failure scenarios
+        throw Exception('Failed to load data. Status code: ${data.statusCode}');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return list;
+    //return (response).map((e) => ServiceReminder.fromJson(e)).toList();
   }
 
   Future<List<String>> fetchSa() async {
-    List<Map<String, dynamic>> response = await supabase.from('sa').select();
-
-    return response.map((e) => e['SA'].toString()).toList();
+    return list.map((e) => e.sa.toString()).toList().toSet().toList();
   }
 
   Future<List<String>> fetchVin() async {
-    List<Map<String, dynamic>> response = await supabase.from('vin').select();
+    //List<Map<String, dynamic>> response = await supabase.from('vin').select();
 
-    return response.map((e) => e['Norangka'].toString()).toList();
+    return list.map((e) => e.norangka.toString()).toList().toSet().toList();
   }
 
   Future<List<String>> fetchMonth() async {

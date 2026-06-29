@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
   List<CR7> _masterData = [];
+  late Cr7Loaded currentState;
   final KpiRepository repository;
   final int pageSize = 13; // Sesuai baris yang ditampilkan di PDF
   String unopol = "";
@@ -35,7 +36,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
     });
     on<FilterCr7Data>((event, emit) {
       if (state is Cr7Loaded) {
-        final currentState = state as Cr7Loaded;
+        // final currentState = state as Cr7Loaded;
 
         // Tangkap nilai dropdown yang baru di-klik, atau gunakan yang lama jika null
         final selectedSa = event.sa == "null" ? null : event.sa;
@@ -43,14 +44,13 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
         final selectNopol = event.nopol ?? event.nopol;
         // Lakukan filter pada _masterData
         final filteredList = _masterData.where((item) {
+          final String waktu = DateFormat(
+            "MMMM",
+            "id",
+          ).format(DateFormat('E MMM dd yyyy HH:mm:ss Z').parse(item.month!));
           final matchMonth =
               selectedMonth == null ||
-              (DateFormat(
-                "MMMM",
-                "id",
-              ).format(DateTime.parse(item.month!)).toLowerCase()).contains(
-                event.month!.toLowerCase(),
-              );
+              waktu.toLowerCase().contains(event.month!.toLowerCase());
 
           final matchSa =
               selectedSa == null ||
@@ -58,7 +58,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
           final matchNopol =
               selectNopol == null ||
               item.policeNo!.toLowerCase().contains(event.nopol!.toLowerCase());
-          return matchSa && matchMonth && matchNopol;
+          return matchSa && matchNopol && matchMonth;
         }).toList();
         // Update state menggunakan copyWith dengan data hasil filter
         emit(
@@ -73,12 +73,12 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
     });
     on<SearchCr7Data>((event, emit) async {
       if (state is Cr7Loaded) {
-        final currentState = state as Cr7Loaded;
+        final currentStates = state as Cr7Loaded;
         final query = event.query.toLowerCase();
         try {
           emit(Cr7Loading());
 
-          final filteredData = currentState.data.where((item) {
+          final filteredData = currentStates.data.where((item) {
             final policeNo = item.policeNo?.toLowerCase() ?? '';
             final namaPelanggan = item.namaPelanggan?.toLowerCase() ?? '';
             final potensi = item.perbaikanCr7?.toLowerCase() ?? '';
@@ -90,7 +90,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
           }).toList();
 
           emit(
-            currentState.copyWith(
+            currentStates.copyWith(
               data: filteredData,
               sa: currentState.sa,
               month: currentState.month,

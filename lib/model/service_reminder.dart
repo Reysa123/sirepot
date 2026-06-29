@@ -117,8 +117,8 @@ class ServiceReminder {
 }
 
 class CR7 {
-  final int no;
-  final int? serviceOrder;
+  final String? no;
+  final String? serviceOrder;
   final String? sa;
   final String? teknisi;
   final String? fo;
@@ -135,7 +135,7 @@ class CR7 {
   final String? statusDp;
   final String? norangka;
   final String? namaPelanggan;
-  final int? telephoneCp;
+  final String? telephoneCp;
   final String? cai;
   final String? omset;
 
@@ -166,8 +166,8 @@ class CR7 {
   // Mengubah dari Map (JSON) ke Object Dart
   factory CR7.fromJson(Map<String, dynamic> json) {
     return CR7(
-      no: json['No'] as int,
-      serviceOrder: json['Service Order'] as int?,
+      no: "${json['No'] ?? 0}",
+      serviceOrder: "${json['Service Order'] ?? 0}",
       sa: json['SA'].toString(),
       teknisi: json['Teknisi'].toString(),
       fo: json['FO'].toString(),
@@ -184,7 +184,7 @@ class CR7 {
       statusDp: json['Status DP'].toString(),
       norangka: json['Norangka'].toString(),
       namaPelanggan: json['Nama Pelanggan'].toString(),
-      telephoneCp: json['Telephone CP'] as int?,
+      telephoneCp: "${json['Telephone CP'] ?? 0}",
       cai: json['CAI'].toString(),
       omset: json['OMSET'].toString(),
     );

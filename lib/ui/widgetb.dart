@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
@@ -9,6 +12,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
+import 'package:web/web.dart' as web;
+import 'dart:js_interop';
+import 'package:excel/excel.dart' as excel_lib;
 
 class WidgetB extends StatelessWidget {
   const WidgetB({super.key});
@@ -19,7 +25,16 @@ class WidgetB extends StatelessWidget {
       builder: (context, state) {
         if (state is KpiLoading) {
           return SizedBox.expand(
-            child: const Center(child: CircularProgressIndicator()),
+            child: Center(
+              child: Column(
+                children: [
+                  Spacer(),
+                  CircularProgressIndicator(color: Colors.white),
+                  Text("Loading...", style: TextStyle(color: Colors.white)),
+                  Spacer(),
+                ],
+              ),
+            ),
           );
         }
         if (state is KpiLoaded) {
@@ -108,25 +123,49 @@ class WidgetB extends StatelessWidget {
             ),
           );
         }),
+        // TOMBOL PREVIEW DATA
         InkWell(
-          onTap: () {},
+          onTap: () async {
+            _showLoadingDialog(ctx, "Menyiapkan data...");
+            await Future.delayed(const Duration(milliseconds: 300));
+
+            // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
+            if (ctx.mounted) {
+              Navigator.pop(ctx);
+
+              _showPreviewDialog(ctx, state.data);
+            }
+          },
           child: Container(
             height: 45,
             width: 45,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.all(Radius.circular(50)),
             ),
             child: const Icon(Icons.file_open, color: Colors.white),
           ),
         ),
+
+        // TOMBOL EXPORT EXCEL
         InkWell(
-          onTap: () {},
+          onTap: () async {
+            _showLoadingDialog(ctx, "Menyiapkan data...");
+            await Future.delayed(const Duration(milliseconds: 300));
+
+            // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
+            if (ctx.mounted) {
+              Navigator.pop(ctx);
+
+              _exportToExcel(ctx, state.data);
+            }
+            //_exportToExcel(ctx, state.data);
+          },
           child: Container(
             height: 45,
             width: 45,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.all(Radius.circular(50)),
             ),
@@ -164,6 +203,261 @@ class WidgetB extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // ==================== DIALOG LOADING MELAYANG ====================
+  void _showLoadingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // Pengguna tidak bisa menutup dialog secara manual
+      builder: (BuildContext ctx) {
+        return PopScope(
+          canPop: false, // Mencegah tombol back menutup loading
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(color: Color(0xFFEB0A1E)),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ==================== LOGIKA PREVIEW DIALOG ====================
+  void _showPreviewDialog(BuildContext context, List data) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Preview Data Sebelum Export",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.amber.shade100,
+                  width: double.infinity,
+                  child: Text(
+                    "Total data yang akan diexport: ${data.length} baris.",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        headingRowColor: WidgetStateProperty.all(
+                          Colors.grey.shade200,
+                        ),
+                        columns: const [
+                          DataColumn(label: Text('NO')),
+                          DataColumn(label: Text('Police No')),
+                          DataColumn(label: Text('NCS')),
+                          DataColumn(label: Text('Model')),
+                          DataColumn(label: Text('Nama Pelanggan')),
+                          DataColumn(label: Text('NO HP')),
+                          DataColumn(label: Text('Potensi')),
+                          DataColumn(label: Text('Program')),
+                        ],
+                        rows: data.map((item) {
+                          int index = data.indexOf(item) + 1;
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(index.toString())),
+                              DataCell(Text(item.policeNo ?? '-')),
+                              DataCell(Text(item.ncs ?? '-')),
+                              DataCell(Text(item.model ?? '-')),
+                              DataCell(Text(item.namaPelanggan ?? '-')),
+                              DataCell(
+                                Text(item.nomerTelephone?.toString() ?? '-'),
+                              ),
+                              DataCell(Text(item.potensi ?? '-')),
+                              DataCell(Text(item.program ?? '-')),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () async {
+                Navigator.pop(ctx);
+                _showLoadingDialog(context, "Menyiapkan data...");
+                await Future.delayed(const Duration(milliseconds: 300));
+
+                // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
+                if (context.mounted) {
+                  Navigator.pop(context);
+
+                  _exportToExcel(ctx, data);
+                }
+              },
+              icon: const Icon(Icons.download),
+              label: const Text("Export ke Excel Sekarang"),
+            ),
+          ],
+        );
+      },
+    );
+  } // ==================== LOGIKA EXPORT EXCEL ====================
+
+  // ==================== LOGIKA EXPORT EXCEL (FLUTTER WEB) ====================
+  Future<void> _exportToExcel(BuildContext context, List<dynamic> data) async {
+    try {
+      var excel = excel_lib.Excel.createExcel();
+      excel_lib.Sheet sheetObject = excel['Data KPI'];
+      excel.link('Data KPI', sheetObject);
+      excel.delete('Sheet1'); // Menghapus lembar bawaan default bawaan plugin
+
+      // Pembuatan baris Header utama berkas excel
+      List<String> headers = [
+        "NO",
+        "Police No",
+        "NCS",
+        "Model",
+        "Nama Pelanggan",
+        "NO HP",
+        "Last Service",
+        "Last Job",
+        "Potensi",
+        "Program",
+        "Area",
+      ];
+      sheetObject.appendRow(
+        headers.map((e) => excel_lib.TextCellValue(e)).toList(),
+      );
+
+      // Looping data item dari list state bloc masuk ke excel row
+      for (int i = 0; i < data.length; i++) {
+        final item = data[i];
+        List<dynamic> row = [
+          (i + 1).toString(),
+          item.policeNo ?? '',
+          item.ncs ?? '',
+          item.model ?? '',
+          item.namaPelanggan ?? '',
+          item.nomerTelephone?.toString() ?? '',
+          item.lastServiceTgl?.toString() ?? '',
+          item.lastJob ?? '',
+          item.potensi ?? '',
+          item.program ?? '',
+          item.area ?? '',
+        ];
+        sheetObject.appendRow(
+          row.map((e) => excel_lib.TextCellValue(e)).toList(),
+        );
+      }
+
+      // Encode document ke bentuk binary bytes
+      var fileBytes = excel.encode();
+      if (fileBytes == null) return;
+
+      if (kIsWeb) {
+        final uint8List = Uint8List.fromList(fileBytes);
+        final jsArray = [uint8List.toJS].toJS;
+        // --- PROSES DOWNLOAD KHUSUS FLUTTER WEB ---
+        final blob = web.Blob(
+          jsArray,
+          web.BlobPropertyBag(
+            type:
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          ),
+        );
+        final url = web.URL.createObjectURL(blob);
+        final anchor = web.document.createElement('a') as web.HTMLAnchorElement;
+        // Membuat elemen anchor <a> tak terlihat untuk memicu unduhan browser
+        anchor.href = url;
+        anchor.setAttribute(
+          "download",
+          "Data-Remainder-Service${DateTime.now().millisecondsSinceEpoch}.xlsx",
+        );
+        anchor.click(); // Memicu klik otomatis untuk mengunduh
+
+        // Bersihkan objek URL dari memori browser setelah selesai
+        web.URL.revokeObjectURL(url);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('File Excel berhasil diunduh ke browser!'),
+            ),
+          );
+        }
+
+        // } else {
+        //   // --- PROSES SAVE UNTUK NATIVE (MOBILE/DESKTOP) ---
+        //   String? outputFile = await FilePicker.saveFile(
+        //     dialogTitle: 'Simpan Hasil File Excel Ke:',
+        //     fileName: 'Data_KPI_Export.xlsx',
+        //     type: FileType.custom,
+        //     allowedExtensions: ['xlsx'],
+        //   );
+
+        //   if (outputFile != null) {
+        //     File file = File(outputFile);
+        //     await file.writeAsBytes(fileBytes);
+
+        //     if (context.mounted) {
+        //       ScaffoldMessenger.of(context).showSnackBar(
+        //         const SnackBar(content: Text('Berhasil menyimpan data ke Excel!')),
+        //       );
+        //     }
+        //   }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Terjadi kesalahan export data: $e')),
+        );
+      }
+    }
   }
 
   Widget _buildDataTable(BuildContext context, List<ServiceReminder> data) {

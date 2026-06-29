@@ -23,14 +23,12 @@ class WhatsappWidget extends StatefulWidget {
 class _WhatsappWidgetState extends State<WhatsappWidget> {
   late SingleValueDropDownController _dropDownController;
   late TextEditingController _textController;
-  String _selectedPic = "TIKA"; // PIC Default
+  String? _selectedPic; // PIC Default
 
   @override
   void initState() {
     super.initState();
-    _dropDownController = SingleValueDropDownController(
-      data: DropDownValueModel(name: _selectedPic, value: _selectedPic),
-    );
+    _dropDownController = SingleValueDropDownController();
     _textController = TextEditingController();
     _updateTextMessage(); // Generate pesan pertama kali
   }
@@ -228,36 +226,44 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
                   ),
                   elevation: 2,
                 ),
-                onPressed: () async {
-                  // String pesanSelesai = _textController.text;
-                  String cleanPhone = widget.nohp.replaceAll(
-                    RegExp(r'[^0-9]'),
-                    '',
-                  );
+                onPressed: _selectedPic == null
+                    ? null
+                    : () async {
+                        // String pesanSelesai = _textController.text;
+                        String cleanPhone = widget.nohp.replaceAll(
+                          RegExp(r'[^0-9]'),
+                          '',
+                        );
 
-                  // B. Ubah awalan '08' menjadi '62' jika ada
-                  if (cleanPhone.startsWith('0')) {
-                    cleanPhone = '62${cleanPhone.substring(1)}';
-                  }
-                  String isiPesan = _textController.text;
-                  String urlString =
-                      "https://wa.me/$cleanPhone?text=${Uri.encodeComponent(isiPesan)}";
+                        // B. Ubah awalan '08' menjadi '62' jika ada
+                        if (cleanPhone.startsWith('0')) {
+                          cleanPhone = '62${cleanPhone.substring(1)}';
+                        }
+                        if (cleanPhone.startsWith('8')) {
+                          cleanPhone = '62${cleanPhone.substring(0)}';
+                        }
+                        String isiPesan = _textController.text;
+                        String urlString =
+                            "https://wa.me/$cleanPhone?text=${Uri.encodeComponent(isiPesan)}";
 
-                  final Uri url = Uri.parse(urlString);
-                  try {
-                    // E. Jalankan URL (akan otomatis membuka aplikasi WA di HP / Web)
-                    if (await launchUrl(
-                      url,
-                      mode: LaunchMode.externalApplication,
-                    )) {
-                      // Berhasil membuka
-                    } else {
-                      _showSnackBar('Tidak dapat membuka WhatsApp', Colors.red);
-                    }
-                  } catch (e) {
-                    _showSnackBar('Terjadi kesalahan: $e', Colors.red);
-                  }
-                },
+                        final Uri url = Uri.parse(urlString);
+                        try {
+                          // E. Jalankan URL (akan otomatis membuka aplikasi WA di HP / Web)
+                          if (await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          )) {
+                            // Berhasil membuka
+                          } else {
+                            _showSnackBar(
+                              'Tidak dapat membuka WhatsApp',
+                              Colors.red,
+                            );
+                          }
+                        } catch (e) {
+                          _showSnackBar('Terjadi kesalahan: $e', Colors.red);
+                        }
+                      },
 
                 icon: const Icon(Icons.send_rounded),
                 label: const Text(

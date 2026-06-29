@@ -16,7 +16,18 @@ class WidgetF extends StatelessWidget {
     return BlocBuilder<SpesialOrderPartBloc, SpesialOrderPartState>(
       builder: (context, state) {
         if (state is SpesialOrderPartLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SizedBox.expand(
+              child: Column(
+                children: [
+                  Spacer(),
+                  CircularProgressIndicator(color: Colors.white),
+                  Text("Loading...", style: TextStyle(color: Colors.white)),
+                  Spacer(),
+                ],
+              ),
+            ),
+          );
         }
         if (state is SpesialOrderPartLoaded) {
           return Padding(
