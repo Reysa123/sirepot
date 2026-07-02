@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
-  List<CR7> _masterData = [];
+  late List<CR7> data = [];
   late Cr7Loaded currentState;
   final KpiRepository repository;
   final int pageSize = 13; // Sesuai baris yang ditampilkan di PDF
@@ -16,14 +16,21 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
       emit(Cr7Loading());
       try {
         emit(Cr7Loading());
-        _masterData = await repository.fetchcr7(event.page, pageSize);
+        data = await repository.fetchcr7(event.page, pageSize);
         final sa = await repository.fetchSa();
         final month = await repository.fetchMonth();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
-        bool reachedMax = _masterData.length < pageSize;
+        bool reachedMax = data.length < pageSize;
+        currentState = Cr7Loaded(
+          data: data,
+          sa: sa,
+          month: month,
+          currentPage: event.page,
+          hasReachedMax: reachedMax,
+        );
         emit(
           Cr7Loaded(
-            data: _masterData,
+            data: data,
             sa: sa,
             month: month,
             currentPage: event.page,
@@ -43,7 +50,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
         final selectedMonth = event.month == "null" ? null : event.month;
         final selectNopol = event.nopol ?? event.nopol;
         // Lakukan filter pada _masterData
-        final filteredList = _masterData.where((item) {
+        final filteredList = data.where((item) {
           final String waktu = DateFormat(
             "MMMM",
             "id",
@@ -73,7 +80,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
     });
     on<SearchCr7Data>((event, emit) async {
       if (state is Cr7Loaded) {
-        final currentStates = state as Cr7Loaded;
+        final currentStates = currentState;
         final query = event.query.toLowerCase();
         try {
           emit(Cr7Loading());

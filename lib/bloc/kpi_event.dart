@@ -11,8 +11,16 @@ class FilterKpiData extends KpiEvent {
   final String? program;
   final String? month;
   final String? nopol;
+  final String? area;
 
-  FilterKpiData({this.repair, this.sbe, this.program, this.month,this.nopol});
+  FilterKpiData({
+    this.repair,
+    this.sbe,
+    this.program,
+    this.month,
+    this.nopol,
+    this.area,
+  });
 }
 
 class SearchKpiData extends KpiEvent {

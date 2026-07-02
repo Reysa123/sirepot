@@ -13,18 +13,21 @@ class KpiLoaded extends KpiState {
   final List<String> repair;
   final List<String> program;
   final List<String> sbe;
+  final List<String> area;
   final bool hasReachedMax;
   final String? selectedSbe;
   final String? selectedMonth;
   final String? selectedRepair;
   final String? selectedProgram;
   final String? selectedNopol;
+  final String? selectedArea;
   KpiLoaded({
     required this.data,
     required this.sbe,
     required this.month,
     required this.repair,
     required this.program,
+    required this.area,
     this.currentPage = 0,
     this.hasReachedMax = false,
     this.selectedSbe,
@@ -32,6 +35,7 @@ class KpiLoaded extends KpiState {
     this.selectedRepair,
     this.selectedProgram,
     this.selectedNopol,
+    this.selectedArea,
   });
 
   KpiLoaded copyWith({
@@ -39,24 +43,28 @@ class KpiLoaded extends KpiState {
     List<String>? month,
     List<String>? repair,
     List<String>? program,
+    List<String>? area,
     List<ServiceReminder>? data,
     String? selectedSbe,
     String? selectedMonth,
     String? selectedRepair,
     String? selectedProgram,
     String? selectedNopol,
+    String? selectedArea,
   }) {
     return KpiLoaded(
       sbe: sbe ?? this.sbe,
       month: month ?? this.month,
       repair: repair ?? this.repair,
       program: program ?? this.program,
+      area: area ?? this.area,
       data: data ?? this.data,
       selectedSbe: selectedSbe ?? this.selectedSbe,
       selectedMonth: selectedMonth ?? this.selectedMonth,
       selectedRepair: selectedRepair ?? this.selectedRepair,
       selectedProgram: selectedProgram ?? this.selectedProgram,
-      selectedNopol:selectedNopol??this.selectedNopol,
+      selectedNopol: selectedNopol ?? this.selectedNopol,
+      selectedArea: selectedArea ?? this.selectedArea,
     );
   }
 }

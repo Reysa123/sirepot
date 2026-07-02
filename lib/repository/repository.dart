@@ -8,6 +8,12 @@ class KpiRepository {
   // final supabase = Supabase.instance.client;
   List<ServiceReminder> response = [];
   List<CR7> list = [];
+  Future<List<ImageProvider>> getImage()async{
+   final ImageProvider image1 = AssetImage("images/background.jpg");
+    final ImageProvider image2 = AssetImage("images/sireport.png"),
+        image3 = AssetImage("images/agung.png");
+        return [image1,image2,image3];
+  }
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
     //final response = await supabase.from('mra').select();
 
@@ -72,7 +78,9 @@ class KpiRepository {
   Future<List<String>> fetchPotensi() async {
     return response.map((v) => v.potensi!).toSet().toList();
   }
-
+ Future<List<String>> fetchArea() async {
+    return response.map((v) => v.area!).toSet().toList();
+  }
   Future<List<String>> fetchProgram() async {
     // List<Map<String, dynamic>> response = await supabase
     //     .from('program_service')

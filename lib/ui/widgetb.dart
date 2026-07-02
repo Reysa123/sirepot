@@ -1,7 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
@@ -14,7 +11,8 @@ import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
-import 'package:excel/excel.dart' as excel_lib;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
+import 'dart:typed_data';
 
 class WidgetB extends StatelessWidget {
   const WidgetB({super.key});
@@ -44,7 +42,15 @@ class WidgetB extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // FILTER & SEARCH AREA
-                _buildFilterSection(context, state),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width,
+                    ),
+                    child: _buildFilterSection(context, state),
+                  ),
+                ),
                 const SizedBox(height: 8),
 
                 // TABLE AREA dibungkus Expanded agar tabel bisa scrollable
@@ -72,7 +78,7 @@ class WidgetB extends StatelessWidget {
 
   Widget _buildFilterSection(BuildContext ctx, KpiLoaded state) {
     return Row(
-      spacing: 15,
+      spacing: 8,
       children: [
         _filterDropdown("Repair Type", state.selectedRepair, state.repair, (v) {
           ctx.read<KpiBloc>().add(
@@ -120,6 +126,18 @@ class WidgetB extends StatelessWidget {
               program: state.selectedProgram,
               month: v,
               nopol: state.selectedNopol,
+            ),
+          );
+        }),
+        _filterDropdown("Area", state.selectedArea, state.area, (v) {
+          ctx.read<KpiBloc>().add(
+            FilterKpiData(
+              repair: state.selectedRepair,
+              sbe: state.selectedSbe,
+              program: state.selectedProgram,
+              month: state.selectedMonth,
+              nopol: state.selectedNopol,
+              area: v,
             ),
           );
         }),
@@ -177,7 +195,7 @@ class WidgetB extends StatelessWidget {
         ),
         SizedBox(
           height: 43,
-          width: 200, // Memberi lebar tetap pada search bar
+          width: 150, // Memberi lebar tetap pada search bar
           child: TextField(
             style: TextStyle(fontSize: 12),
             decoration: InputDecoration(
@@ -349,113 +367,116 @@ class WidgetB extends StatelessWidget {
   } // ==================== LOGIKA EXPORT EXCEL ====================
 
   // ==================== LOGIKA EXPORT EXCEL (FLUTTER WEB) ====================
+
   Future<void> _exportToExcel(BuildContext context, List<dynamic> data) async {
     try {
-      var excel = excel_lib.Excel.createExcel();
-      excel_lib.Sheet sheetObject = excel['Data KPI'];
-      excel.link('Data KPI', sheetObject);
-      excel.delete('Sheet1'); // Menghapus lembar bawaan default bawaan plugin
+      // Membuat workbook
+      final workbook = xlsio.Workbook();
 
-      // Pembuatan baris Header utama berkas excel
-      List<String> headers = [
-        "NO",
-        "Police No",
-        "NCS",
-        "Model",
-        "Nama Pelanggan",
-        "NO HP",
-        "Last Service",
-        "Last Job",
-        "Potensi",
-        "Program",
-        "Area",
+      final sheet = workbook.worksheets[0];
+      sheet.name = 'Service Remainder';
+
+      // Header
+      final headers = [
+        'NO',
+        'Police No',
+        'NCS',
+        'Model',
+        'Nama Pelanggan',
+        'NO HP',
+        'Last Service',
+        'Last Job',
+        'Potensi',
+        'Program',
+        'Area',
       ];
-      sheetObject.appendRow(
-        headers.map((e) => excel_lib.TextCellValue(e)).toList(),
-      );
 
-      // Looping data item dari list state bloc masuk ke excel row
+      // Style Header
+      final headerStyle = workbook.styles.add('HeaderStyle');
+      headerStyle.bold = true;
+      headerStyle.fontSize = 11;
+      headerStyle.hAlign = xlsio.HAlignType.center;
+      headerStyle.vAlign = xlsio.VAlignType.center;
+
+      // Isi Header
+      for (int i = 0; i < headers.length; i++) {
+        final cell = sheet.getRangeByIndex(1, i + 1);
+        cell.setText(headers[i]);
+        cell.cellStyle = headerStyle;
+      }
+
+      // Isi Data
       for (int i = 0; i < data.length; i++) {
         final item = data[i];
-        List<dynamic> row = [
-          (i + 1).toString(),
-          item.policeNo ?? '',
-          item.ncs ?? '',
-          item.model ?? '',
-          item.namaPelanggan ?? '',
-          item.nomerTelephone?.toString() ?? '',
-          item.lastServiceTgl?.toString() ?? '',
-          item.lastJob ?? '',
-          item.potensi ?? '',
-          item.program ?? '',
-          item.area ?? '',
-        ];
-        sheetObject.appendRow(
-          row.map((e) => excel_lib.TextCellValue(e)).toList(),
-        );
+        final row = i + 2;
+
+        sheet.getRangeByIndex(row, 1).setText('${i + 1}');
+        sheet.getRangeByIndex(row, 2).setText(item.policeNo ?? '');
+        sheet.getRangeByIndex(row, 3).setText(item.ncs ?? '');
+        sheet.getRangeByIndex(row, 4).setText(item.model ?? '');
+        sheet.getRangeByIndex(row, 5).setText(item.namaPelanggan ?? '');
+        sheet
+            .getRangeByIndex(row, 6)
+            .setText(item.nomerTelephone?.toString() ?? '');
+        sheet
+            .getRangeByIndex(row, 7)
+            .setText(item.lastServiceTgl?.toString() ?? '');
+        sheet.getRangeByIndex(row, 8).setText(item.lastJob ?? '');
+        sheet.getRangeByIndex(row, 9).setText(item.potensi ?? '');
+        sheet.getRangeByIndex(row, 10).setText(item.program ?? '');
+        sheet.getRangeByIndex(row, 11).setText(item.area ?? '');
       }
 
-      // Encode document ke bentuk binary bytes
-      var fileBytes = excel.encode();
-      if (fileBytes == null) return;
-
-      if (kIsWeb) {
-        final uint8List = Uint8List.fromList(fileBytes);
-        final jsArray = [uint8List.toJS].toJS;
-        // --- PROSES DOWNLOAD KHUSUS FLUTTER WEB ---
-        final blob = web.Blob(
-          jsArray,
-          web.BlobPropertyBag(
-            type:
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          ),
-        );
-        final url = web.URL.createObjectURL(blob);
-        final anchor = web.document.createElement('a') as web.HTMLAnchorElement;
-        // Membuat elemen anchor <a> tak terlihat untuk memicu unduhan browser
-        anchor.href = url;
-        anchor.setAttribute(
-          "download",
-          "Data-Remainder-Service${DateTime.now().millisecondsSinceEpoch}.xlsx",
-        );
-        anchor.click(); // Memicu klik otomatis untuk mengunduh
-
-        // Bersihkan objek URL dari memori browser setelah selesai
-        web.URL.revokeObjectURL(url);
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('File Excel berhasil diunduh ke browser!'),
-            ),
-          );
-        }
-
-        // } else {
-        //   // --- PROSES SAVE UNTUK NATIVE (MOBILE/DESKTOP) ---
-        //   String? outputFile = await FilePicker.saveFile(
-        //     dialogTitle: 'Simpan Hasil File Excel Ke:',
-        //     fileName: 'Data_KPI_Export.xlsx',
-        //     type: FileType.custom,
-        //     allowedExtensions: ['xlsx'],
-        //   );
-
-        //   if (outputFile != null) {
-        //     File file = File(outputFile);
-        //     await file.writeAsBytes(fileBytes);
-
-        //     if (context.mounted) {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         const SnackBar(content: Text('Berhasil menyimpan data ke Excel!')),
-        //       );
-        //     }
-        //   }
+      // Auto Fit Kolom
+      for (int i = 1; i <= headers.length; i++) {
+        sheet.autoFitColumn(i);
       }
-    } catch (e) {
+
+      // Freeze Header
+      // sheet.freezePanes(2, 1);
+
+      // Generate Excel
+      final List<int> bytes = workbook.saveAsStream();
+
+      workbook.dispose();
+
+      // Download ke Browser
+      final blob = web.Blob(
+        [Uint8List.fromList(bytes).toJS].toJS,
+        web.BlobPropertyBag(
+          type:
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ),
+      );
+
+      final url = web.URL.createObjectURL(blob);
+
+      final anchor = web.HTMLAnchorElement()
+        ..href = url
+        ..download =
+            'Data-Remainder-Service-${DateTime.now().millisecondsSinceEpoch}.xlsx';
+
+      web.document.body?.append(anchor);
+
+      anchor.click();
+
+      anchor.remove();
+
+      web.URL.revokeObjectURL(url);
+
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Terjadi kesalahan export data: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Export Excel berhasil')));
+      }
+    } catch (e, s) {
+      debugPrint(e.toString());
+      debugPrint(s.toString());
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Export gagal : $e')));
       }
     }
   }
@@ -532,7 +553,7 @@ class WidgetB extends StatelessWidget {
   ) {
     return Container(
       padding: const EdgeInsets.all(4),
-      width: 140,
+      width: 135,
       child: DropDownTextField(
         dropDownItemCount: 12,
         // controller: controller,
@@ -620,7 +641,7 @@ class ServiceReminderSource extends DataTableSource {
             children: [
               IconButton(
                 onPressed: () async {
-                   await showDialog(
+                  await showDialog(
                     context: context,
                     builder: (_) => WhatsappWidget(
                       nmPlg: item.namaPelanggan ?? "Pelanggan",
@@ -718,7 +739,7 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
 
   @override
   Widget build(BuildContext context) {
-   // final allItems = [...notConnected, ...connected];
+    // final allItems = [...notConnected, ...connected];
 
     return Dialog(
       backgroundColor: const Color(0xffC60000),

@@ -20,6 +20,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         final program = await repository.fetchProgram();
         final repair = await repository.fetchRepair();
         final month = await repository.fetchMonth();
+        final area = await repository.fetchArea();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
         currentState = KpiLoaded(
@@ -28,6 +29,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
           month: month,
           repair: repair,
           program: program,
+          area: area,
           currentPage: event.page,
           hasReachedMax: reachedMax,
         );
@@ -38,6 +40,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
             month: month,
             repair: repair,
             program: program,
+            area: area,
             currentPage: event.page,
             hasReachedMax: reachedMax,
           ),
@@ -87,6 +90,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         final updatedProgram = event.program == "null" ? null : event.program;
         final updatedMonth = event.month == "null" ? null : event.month;
         final updateNopol = event.nopol ?? event.nopol;
+        final updateArea = event.area == "null" ? null : event.area;
         //Tampilkan loading jika perlu
         //emit(KpiLoading());
 
@@ -105,7 +109,10 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
           final unopol =
               updateNopol == null ||
               item.policeNo!.toLowerCase().contains(event.nopol!.toLowerCase());
-          return urep && uprog && umonth && unopol && upotensi;
+          final uarea =
+              updateArea == null ||
+              item.area!.toLowerCase().contains(event.area!.toLowerCase());
+          return urep && uprog && umonth && unopol && upotensi && uarea;
         }).toList();
 
         emit(
@@ -115,6 +122,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
             selectedProgram: updatedProgram,
             selectedMonth: updatedMonth,
             selectedNopol: updateNopol,
+            selectedArea: updateArea,
             data: filteredData, // Masukkan data yang sudah di-filter di sini
           ),
         );
