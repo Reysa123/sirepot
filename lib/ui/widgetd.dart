@@ -7,6 +7,7 @@ import 'package:sirepot/bloc/cr7/cr7state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:sirepot/ui/widgetwhatsapp.dart';
 
 class WidgetD extends StatelessWidget {
   const WidgetD({super.key});
@@ -264,7 +265,18 @@ class ServiceReminderSource extends DataTableSource {
           Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: ()async {
+                   await showDialog(
+                    context: context,
+                    builder: (_) => WhatsappWidget(
+                      layer: false,
+                      nmPlg: item.namaPelanggan ?? "Pelanggan",
+                      nohp: item.telephoneCp ?? '0',
+                      nopol: item.policeNo ?? "No Plat",
+                      model: item.category ?? "No Model",
+                    ),
+                  );
+                },
                 icon: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
                 color: Colors.green,
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_bloc.dart';
 import 'package:sirepot/bloc/menu/navigation_event.dart';
 import 'package:sirepot/bloc/menu/navigation_state.dart';
+import 'package:sirepot/ui/settings.dart';
 import 'package:sirepot/ui/widgetb.dart';
 import 'package:sirepot/ui/widgetc.dart';
 import 'package:sirepot/ui/widgetd.dart';
@@ -140,6 +141,14 @@ class DashboardPage extends StatelessWidget {
                   5,
                   index,
                 ),
+                _sidebarItem(
+                  context,
+                  'images/setting.png',
+
+                  "Setting/Pengaturan",
+                  6,
+                  index,
+                ),
                 Image.asset('images/sitajem.png', width: 150, height: 150),
               ],
             ),
@@ -168,6 +177,8 @@ class DashboardPage extends StatelessWidget {
         return WidgetE();
       case 5:
         return WidgetF();
+      case 6:
+        return KataWA();
       default:
         return const Center(child: Text("Page Not Found"));
     }

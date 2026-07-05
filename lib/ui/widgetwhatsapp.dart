@@ -1,8 +1,11 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sirepot/ui/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WhatsappWidget extends StatefulWidget {
+  final bool layer;
   final String nmPlg;
   final String nopol;
   final String nohp;
@@ -10,6 +13,7 @@ class WhatsappWidget extends StatefulWidget {
 
   const WhatsappWidget({
     super.key,
+    required this.layer,
     required this.nmPlg,
     required this.nohp,
     required this.nopol,
@@ -34,23 +38,61 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
   }
 
   // Fungsi untuk memperbarui teks template secara dinamis jika PIC berubah
-  void _updateTextMessage() {
-    _textController.text =
-        '*Service Toyota Check*\n\n'
-        '*Hallo Semeton Agung Toyota Tabanan*\n'
-        'Nama                   : ${widget.nmPlg}\n'
-        'Type Kendaraan  : ${widget.model}\n'
-        'No Polisi              : ${widget.nopol}\n\n'
-        'Perkenalkan saya $_selectedPic Petugas booking service dari Bengkel Agung TOYOTA Tabanan\n'
-        'Menginformasikan untuk Kendaraannya sudah waktu nya untuk *Melakukan Service Berkala dan Penggantian Oli Mesin Rutin 6 Bulan*.\n\n'
-        '*Ambil Hak Gratis Service Toyota Mu yang berlaku dibulan Juni ini*\n\n'
-        'Silahkan melakukan Booking Service, agar kami bisa menyiapkan Waktu, Spare Part dan Teknisi saat servis, dengan balas WA ini🙏.\n\n'
-        'Manfaatkan Layanan Gratis untuk :\n'
-        '🚗 TMS : Toyota Mobile Service (Service di tempat)\n'
-        '🚚 Pick Up Delivery : Antar jemput service\n'
-        'Terima kasih, semoga Aktifitasnya diberikan Kelancaran 🙏😇\n\n'
-        '_abaikan pesan ini jika sudah melakukan service kendaraan rutin_\n\n'
-        'Salam Agung Toyota Tabanan';
+  void _updateTextMessage() async {
+    final pref = await SharedPreferences.getInstance();
+    if (widget.layer) {
+      if (pref.containsKey('kata1')) {
+        final string1 = pref.getString('kata1');
+        _textController.text = string1!
+            .replaceAll('@_nama_pelanggan', widget.nmPlg)
+            .replaceAll('@_type_kendaraan', widget.model)
+            .replaceAll('@_pic', _selectedPic ?? '[PIC]')
+            .replaceAll('@_no_polisi', widget.nopol);
+      } else {
+        _textController.text =
+            '*Service Toyota Check*\n\n'
+            '*Hallo Semeton Agung Toyota Tabanan*\n'
+            'Nama                   : ${widget.nmPlg}\n'
+            'Type Kendaraan  : ${widget.model}\n'
+            'No Polisi              : ${widget.nopol}\n\n'
+            'Perkenalkan saya $_selectedPic Petugas booking service dari Bengkel Agung TOYOTA Tabanan\n'
+            'Menginformasikan untuk Kendaraannya sudah waktu nya untuk *Melakukan Service Berkala dan Penggantian Oli Mesin Rutin 6 Bulan*.\n\n'
+            '*Ambil Hak Gratis Service Toyota Mu yang berlaku dibulan Juni ini*\n\n'
+            'Silahkan melakukan Booking Service, agar kami bisa menyiapkan Waktu, Spare Part dan Teknisi saat servis, dengan balas WA ini🙏.\n\n'
+            'Manfaatkan Layanan Gratis untuk :\n'
+            '🚗 TMS : Toyota Mobile Service (Service di tempat)\n'
+            '🚚 Pick Up Delivery : Antar jemput service\n'
+            'Terima kasih, semoga Aktifitasnya diberikan Kelancaran 🙏😇\n\n'
+            '_abaikan pesan ini jika sudah melakukan service kendaraan rutin_\n\n'
+            'Salam Agung Toyota Tabanan';
+      }
+    } else {
+      if (pref.containsKey('kata2')) {
+        final string2 = pref.getString('kata2');
+        _textController.text = string2!
+            .replaceAll('@_nama_pelanggan', widget.nmPlg)
+            .replaceAll('@_type_kendaraan', widget.model)
+            .replaceAll('@_pic', _selectedPic ?? '[PIC]')
+            .replaceAll('@_no_polisi', widget.nopol);
+      } else {
+        _textController.text =
+            '*Service Toyota Check*\n\n'
+            '*Hallo Semeton Agung Toyota Tabanan*\n'
+            'Nama                   : ${widget.nmPlg}\n'
+            'Category  : ${widget.model}\n'
+            'No Polisi              : ${widget.nopol}\n\n'
+            'Perkenalkan saya $_selectedPic Petugas booking service dari Bengkel Agung TOYOTA Tabanan\n'
+            'Menginformasikan untuk Kendaraannya sudah waktu nya untuk *Melakukan Service Berkala dan Penggantian Oli Mesin Rutin 6 Bulan*.\n\n'
+            '*Ambil Hak Gratis Service Toyota Mu yang berlaku dibulan Juni ini*\n\n'
+            'Silahkan melakukan Booking Service, agar kami bisa menyiapkan Waktu, Spare Part dan Teknisi saat servis, dengan balas WA ini🙏.\n\n'
+            'Manfaatkan Layanan Gratis untuk :\n'
+            '🚗 TMS : Toyota Mobile Service (Service di tempat)\n'
+            '🚚 Pick Up Delivery : Antar jemput service\n'
+            'Terima kasih, semoga Aktifitasnya diberikan Kelancaran 🙏😇\n\n'
+            '_abaikan pesan ini jika sudah melakukan service kendaraan rutin_\n\n'
+            'Salam Agung Toyota Tabanan';
+      }
+    }
   }
 
   @override
@@ -87,7 +129,18 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
                       color: Colors.black87,
                     ),
                   ),
+
                   const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.settings, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => KataWA()),
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.grey),
                     onPressed: () => Navigator.pop(context),

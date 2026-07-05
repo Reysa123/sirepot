@@ -44,6 +44,7 @@ dependencies:
   url_launcher: ^6.3.2
   web: ^1.1.1
   syncfusion_flutter_xlsio: ^33.2.15
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
