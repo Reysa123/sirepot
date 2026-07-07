@@ -224,13 +224,13 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
                                                       .trim()
                                                       .toLowerCase() ==
                                                   currentReason
-                                                      .trim()
+                                                      .trim().replaceAll('.','')
                                                       .toLowerCase() &&
                                               d.potensi
                                                       .toString()
                                                       .trim()
-                                                      .toLowerCase() ==
-                                                  km.trim().toLowerCase(),
+                                                      .toLowerCase().contains(
+                                                  km.trim().replaceAll('.','').toLowerCase()),
                                         )
                                         .length;
 
