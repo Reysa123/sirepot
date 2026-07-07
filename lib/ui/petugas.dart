@@ -20,7 +20,16 @@ class _PetugasPageState extends State<PetugasPage> {
   void _load() async {
     final p = await SharedPreferences.getInstance();
     final data = p.getString('list_petugas');
-    if (data != null) setState(() => listPetugas = List<String>.from(jsonDecode(data)));
+    if (data != null){ setState(() => listPetugas = List<String>.from(jsonDecode(data)));}else{
+      p.setString('list_petugas','TIKA');
+      p.setString('list_petugas','DWI');
+      p.setString('list_petugas','FUAH');
+      final data1 = p.getString('list_petugas');
+      setState(() { 
+        
+        listPetugas = List<String>.from(jsonDecode(data1));
+      });
+    };
   }
 
   void _save() async {
