@@ -425,6 +425,8 @@ class WidgetB extends StatelessWidget {
         sheet.getRangeByIndex(row, 9).setText(item.potensi ?? '');
         sheet.getRangeByIndex(row, 10).setText(item.program ?? '');
         sheet.getRangeByIndex(row, 11).setText(item.area ?? '');
+        sheet.getRangeByIndex(row, 12).setText(item.ncs ?? '');
+        sheet.getRangeByIndex(row, 13).setText(item.cai ?? '');
       }
 
       // Auto Fit Kolom
@@ -675,7 +677,7 @@ class ServiceReminderSource extends DataTableSource {
                   }
                 },
                 icon: const FaIcon(FontAwesomeIcons.phoneVolume, size: 16),
-                color: Colors.red,
+                color: item.ncs!.isNotEmpty()?Colors.yellow:Colors.red,
               ),
             ],
           ),
@@ -731,6 +733,10 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
     const StatusItem(
       category: 'Tersambung',
       title: 'Kend. Sudah servis AT Lain',
+    ),
+    const StatusItem(
+      category: 'Tersambung',
+      title: 'Kend. Sudah servis di AT TBN/ToSS',
     ),
     const StatusItem(
       category: 'Tersambung',
