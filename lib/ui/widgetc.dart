@@ -40,7 +40,9 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
     {'status': 'Tersambung', 'reason': 'Kend. Sudah servis Bengkel lain'},
   ];
 
-  final List<String> agents = ['TIKA', 'DWI', 'FUAH'];
+  final data1 = p.getString('list_petugas');
+  final data=List<String>.from(jsonDecode(data1))
+  final List<String> agents = data;
   bool loading = false;
   List<ServiceReminder> rawData = [];
   Future<void> getData() async {
