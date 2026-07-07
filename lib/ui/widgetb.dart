@@ -389,6 +389,7 @@ class WidgetB extends StatelessWidget {
         'Potensi',
         'Program',
         'Area',
+        'Response',
       ];
 
       // Style Header
@@ -425,8 +426,7 @@ class WidgetB extends StatelessWidget {
         sheet.getRangeByIndex(row, 9).setText(item.potensi ?? '');
         sheet.getRangeByIndex(row, 10).setText(item.program ?? '');
         sheet.getRangeByIndex(row, 11).setText(item.area ?? '');
-        sheet.getRangeByIndex(row, 12).setText(item.ncs ?? '');
-        sheet.getRangeByIndex(row, 13).setText(item.cai ?? '');
+        sheet.getRangeByIndex(row, 12).setText(item.cai ?? '');
       }
 
       // Auto Fit Kolom
