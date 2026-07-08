@@ -21,7 +21,7 @@ class _PetugasPageState extends State<PetugasPage> {
     final p = await SharedPreferences.getInstance();
     final data = p.getStringList('list_petugas');
     if (data != null) {
-      setState(() => listPetugas = List<String>.from(jsonDecode(data)));
+      setState(() => listPetugas = data!;
     } else {
       // Perbaikan: Simpan sebagai List agar bisa di-decode dengan benar
       List<String> initialData = ['TIKA', 'DWI', 'FUAH'];
@@ -32,7 +32,7 @@ class _PetugasPageState extends State<PetugasPage> {
 
   void _save() async {
     final p = await SharedPreferences.getInstance();
-    p.setString('list_petugas', jsonEncode(listPetugas));
+    p.setStringList('list_petugas', jsonEncode(listPetugas));
   }
 
   void _showDialog({String? initial, int? index}) {
