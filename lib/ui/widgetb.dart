@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
-import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:sirepot/repository/repository.dart';
@@ -14,8 +13,29 @@ import 'dart:js_interop';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 import 'dart:typed_data';
 
-class WidgetB extends StatelessWidget {
+class WidgetB extends StatefulWidget {
   const WidgetB({super.key});
+
+  @override
+  State<WidgetB> createState() => _WidgetBState();
+}
+
+class _WidgetBState extends State<WidgetB> {
+  final Map<String, SingleValueDropDownController> cont = {};
+  @override
+  void dispose() {
+    for (var e in cont.values) {
+      e.dispose();
+    }
+    super.dispose();
+  }
+
+  SingleValueDropDownController getCont(String key) {
+    if (!cont.containsKey(key)) {
+      cont[key] = SingleValueDropDownController();
+    }
+    return cont[key]!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +79,7 @@ class WidgetB extends StatelessWidget {
                     builder: (context, constraints) {
                       return SizedBox(
                         width: constraints.maxWidth,
-                        child: _buildDataTable(context, state.data),
+                        child: _buildDataTable(context, state),
                       );
                     },
                   ),
@@ -364,10 +384,9 @@ class WidgetB extends StatelessWidget {
         );
       },
     );
-  } // ==================== LOGIKA EXPORT EXCEL ====================
+  }
 
-  // ==================== LOGIKA EXPORT EXCEL (FLUTTER WEB) ====================
-
+  // ==================== LOGIKA EXPORT EXCEL ====================
   Future<void> _exportToExcel(BuildContext context, List<dynamic> data) async {
     try {
       // Membuat workbook
@@ -390,6 +409,8 @@ class WidgetB extends StatelessWidget {
         'Program',
         'Area',
         'Response',
+        'PIC',
+        'Tanggal FU',
       ];
 
       // Style Header
@@ -427,6 +448,8 @@ class WidgetB extends StatelessWidget {
         sheet.getRangeByIndex(row, 10).setText(item.program ?? '');
         sheet.getRangeByIndex(row, 11).setText(item.area ?? '');
         sheet.getRangeByIndex(row, 12).setText(item.cai ?? '');
+        sheet.getRangeByIndex(row, 13).setText(item.petugas ?? '');
+        sheet.getRangeByIndex(row, 14).setText(item.tglfu ?? '');
       }
 
       // Auto Fit Kolom
@@ -483,9 +506,9 @@ class WidgetB extends StatelessWidget {
     }
   }
 
-  Widget _buildDataTable(BuildContext context, List<ServiceReminder> data) {
+  Widget _buildDataTable(BuildContext context, KpiLoaded state) {
     // Inisialisasi source data
-    final source = ServiceReminderSource(data, context);
+    final source = ServiceReminderSource(state, context);
 
     return Card(
       elevation: 0,
@@ -513,7 +536,7 @@ class WidgetB extends StatelessWidget {
           dataRowHeight: 30, // Tinggi baris sedikit diperbesar untuk kenyamanan
           headingRowHeight: 35,
           horizontalMargin: 12,
-          minWidth: 1300,
+          minWidth: 1360,
           fit: FlexFit.loose,
 
           // Konfigurasi Pagination
@@ -541,6 +564,7 @@ class WidgetB extends StatelessWidget {
             DataColumn(label: Text('Program')),
             DataColumn2(label: Text('Area'), size: ColumnSize.L),
             DataColumn(label: Text('Action')),
+            DataColumn(label: Text('PIC')),
           ],
         ),
       ),
@@ -558,8 +582,8 @@ class WidgetB extends StatelessWidget {
       width: 135,
       child: DropDownTextField(
         dropDownItemCount: 12,
-        // controller: controller,
-        initialValue: selectedValue,
+        controller: getCont(label),
+        //initialValue: selectedValue,
         clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
         // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
         dropDownIconProperty: IconProperty(
@@ -615,15 +639,15 @@ class WidgetB extends StatelessWidget {
 }
 
 class ServiceReminderSource extends DataTableSource {
-  final List<ServiceReminder> data;
+  final KpiLoaded state;
   final BuildContext context;
 
-  ServiceReminderSource(this.data, this.context);
+  ServiceReminderSource(this.state, this.context);
 
   @override
   DataRow? getRow(int index) {
-    if (index >= data.length) return null;
-    final item = data[index];
+    if (index >= state.data.length) return null;
+    final item = state.data[index];
 
     return DataRow2(
       cells: [
@@ -646,6 +670,7 @@ class ServiceReminderSource extends DataTableSource {
                   await showDialog(
                     context: context,
                     builder: (_) => WhatsappWidget(
+                      list: state.listPetugas,
                       layer: true,
                       nmPlg: item.namaPelanggan ?? "Pelanggan",
                       nohp: item.nomerTelephone ?? '0',
@@ -661,27 +686,39 @@ class ServiceReminderSource extends DataTableSource {
                 onPressed: () async {
                   final result = await showDialog<List<dynamic>>(
                     context: context,
-                    builder: (_) => const CallStatusDialog(),
+                    builder: (_) => CallStatusDialog(state: state),
                   );
 
                   if (result != null) {
                     debugPrint(result[0].title);
                     debugPrint(result[0].category);
                     debugPrint(result[1]);
+
                     //addKpiData(rows,[ncs,cai])
-                    await KpiRepository().addKpiData(index + 2, [
-                      result[1],
-                      result[0].title,
-                    ]);
-                    context.read<KpiBloc>().add(FetchKpiData());
+                    final a = await KpiRepository().addKpiData(
+                      int.parse(item.no!) + 1,
+                      [result[1], result[0].title],
+                    );
+                    if (a == 'succses') {
+                      context.read<KpiBloc>().add(
+                        FilterKpiData(
+                          repair: state.selectedRepair,
+                          sbe: state.selectedSbe,
+                          program: state.selectedProgram,
+                          nopol: state.selectedNopol,
+                          month: state.selectedMonth,
+                        ),
+                      );
+                    }
                   }
                 },
                 icon: const FaIcon(FontAwesomeIcons.phoneVolume, size: 16),
-                color: item.ncs!.isNotEmpty()?Colors.yellow:Colors.red,
+                color: item.petugas!.isNotEmpty ? Colors.yellow : Colors.red,
               ),
             ],
           ),
         ),
+        DataCell(Text(item.petugas!)),
       ],
     );
   }
@@ -690,7 +727,7 @@ class ServiceReminderSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => data.length;
+  int get rowCount => state.data.length;
 
   @override
   int get selectedRowCount => 0;
@@ -704,7 +741,8 @@ class StatusItem {
 }
 
 class CallStatusDialog extends StatefulWidget {
-  const CallStatusDialog({super.key});
+  final KpiLoaded state;
+  const CallStatusDialog({super.key, required this.state});
 
   @override
   State<CallStatusDialog> createState() => _CallStatusDialogState();
@@ -743,6 +781,11 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
       title: 'Kend. Sudah servis Bengkel lain',
     ),
   ];
+  @override
+  void dispose() {
+    dropDownController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -824,11 +867,14 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                       listTextStyle: const TextStyle(fontSize: 12),
                       textStyle: const TextStyle(fontSize: 12),
                       // Perbaikan: Memisahkan string array dengan benar
-                      dropDownList: const [
-                        DropDownValueModel(name: "TIKA", value: "TIKA"),
-                        DropDownValueModel(name: "DWI", value: "DWI"),
-                        DropDownValueModel(name: "FUAH", value: "FUAH"),
-                      ],
+                      dropDownList: widget.state.listPetugas
+                          .map((e) => DropDownValueModel(name: e, value: e))
+                          .toList(),
+                      // const [
+                      //   DropDownValueModel(name: "TIKA", value: "TIKA"),
+                      //   DropDownValueModel(name: "DWI", value: "DWI"),
+                      //   DropDownValueModel(name: "FUAH", value: "FUAH"),
+                      // ],
                       onChanged: (dynamic value) {
                         if (value is DropDownValueModel) {
                           setState(() {

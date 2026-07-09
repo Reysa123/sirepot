@@ -1,7 +1,7 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sirepot/ui/settings.dart';
+import 'package:sirepot/ui/katawa.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WhatsappWidget extends StatefulWidget {
@@ -10,6 +10,7 @@ class WhatsappWidget extends StatefulWidget {
   final String nopol;
   final String nohp;
   final String model;
+  final List<String> list;
 
   const WhatsappWidget({
     super.key,
@@ -18,6 +19,7 @@ class WhatsappWidget extends StatefulWidget {
     required this.nohp,
     required this.nopol,
     required this.model,
+    required this.list,
   });
 
   @override
@@ -184,11 +186,12 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
                       listTextStyle: const TextStyle(fontSize: 12),
                       textStyle: const TextStyle(fontSize: 12),
                       // Perbaikan: Memisahkan string array dengan benar
-                      dropDownList: const [
-                        DropDownValueModel(name: "TIKA", value: "TIKA"),
-                        DropDownValueModel(name: "DWI", value: "DWI"),
-                        DropDownValueModel(name: "FUAH", value: "FUAH"),
-                      ],
+                      dropDownList: widget.list.map((e)=>DropDownValueModel(name:e,value: e)).toList(),
+                      // const [
+                      //   DropDownValueModel(name: "TIKA", value: "TIKA"),
+                      //   DropDownValueModel(name: "DWI", value: "DWI"),
+                      //   DropDownValueModel(name: "FUAH", value: "FUAH"),
+                      // ],
                       onChanged: (dynamic value) {
                         if (value is DropDownValueModel) {
                           setState(() {

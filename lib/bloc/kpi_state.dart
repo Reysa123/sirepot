@@ -7,6 +7,7 @@ class KpiInitial extends KpiState {}
 class KpiLoading extends KpiState {}
 
 class KpiLoaded extends KpiState {
+  final List<String> listPetugas;
   final List<ServiceReminder> data;
   final int currentPage;
   final List<String> month;
@@ -22,6 +23,7 @@ class KpiLoaded extends KpiState {
   final String? selectedNopol;
   final String? selectedArea;
   KpiLoaded({
+    required this.listPetugas,
     required this.data,
     required this.sbe,
     required this.month,
@@ -39,6 +41,7 @@ class KpiLoaded extends KpiState {
   });
 
   KpiLoaded copyWith({
+    List<String>? listPetugas,
     List<String>? sbe,
     List<String>? month,
     List<String>? repair,
@@ -53,6 +56,7 @@ class KpiLoaded extends KpiState {
     String? selectedArea,
   }) {
     return KpiLoaded(
+      listPetugas: listPetugas??this.listPetugas,
       sbe: sbe ?? this.sbe,
       month: month ?? this.month,
       repair: repair ?? this.repair,

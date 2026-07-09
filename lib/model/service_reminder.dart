@@ -15,6 +15,8 @@ class ServiceReminder {
   final String? potensi;
   final String? cai;
   final String? area;
+  final String? petugas;
+  final String? tglfu;
 
   ServiceReminder({
     required this.no,
@@ -32,6 +34,8 @@ class ServiceReminder {
     this.potensi,
     this.cai,
     this.area,
+    this.petugas,
+    this.tglfu,
   });
 
   // Membuat salinan objek dengan beberapa perubahan nilai (Optional, berguna untuk state management)
@@ -51,8 +55,11 @@ class ServiceReminder {
     String? potensi,
     String? cai,
     String? area,
+    String? petugas,
+    String? tglfu,
   }) {
     return ServiceReminder(
+      petugas: petugas ?? this.petugas,
       no: no ?? this.no,
       policeNo: policeNo ?? this.policeNo,
       model: model ?? this.model,
@@ -68,6 +75,7 @@ class ServiceReminder {
       potensi: potensi ?? this.potensi,
       cai: cai ?? this.cai,
       area: area ?? this.area,
+      tglfu: tglfu ?? this.tglfu,
     );
   }
 
@@ -91,6 +99,8 @@ class ServiceReminder {
       potensi: json['POTENSI SERVICE'].toString(),
       area: json['AREA'].toString(),
       cai: json['CAI'].toString(),
+      petugas: json['PETUGAS'].toString(),
+      tglfu: json['TANGGAL FU'].toString(),
     );
   }
 
@@ -112,6 +122,8 @@ class ServiceReminder {
       'POTENSI': potensi,
       'CAI': cai,
       'AREA': area,
+      'PETUGAS': petugas,
+      'TANGGAL FU': tglfu,
     };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:sirepot/repository/repository.dart';
 
@@ -37,19 +38,29 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
     {'status': 'Tersambung', 'reason': 'Operational Luar'},
     {'status': 'Tersambung', 'reason': 'Konfirmasi Pihak Lain'},
     {'status': 'Tersambung', 'reason': 'Kend. Sudah servis AT Lain'},
+    {'status': 'Tersambung', 'reason': 'Kend. Sudah servis di AT TBN/ToSS'},
     {'status': 'Tersambung', 'reason': 'Kend. Sudah servis Bengkel lain'},
   ];
 
-  final data1 = p.getString('list_petugas');
-  final data=List<String>.from(jsonDecode(data1))
-  final List<String> agents = data;
+  List<String> agents = [];
   bool loading = false;
   List<ServiceReminder> rawData = [];
   Future<void> getData() async {
-    setState(() {
-      loading = true;
-    });
-
+    SharedPreferences p = await SharedPreferences.getInstance();
+    if (p.containsKey('list_petugas')) {
+      print('data ada ${p.getStringList('list_petugas')}');
+      final data1 = p.getStringList('list_petugas');
+      final data = data1!;
+      setState(() {
+        agents = data;
+        loading = true;
+      });
+    } else {
+      print('datakosong');
+      setState(() {
+        loading = true;
+      });
+    }
     final srawData = await KpiRepository().fetchKpiData(0, 0);
     setState(() {
       rawData = srawData;
@@ -74,17 +85,17 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
         .length;
     return loading
         ? SizedBox.expand(
-          child: const Center(
-            child: Column(
-              children: [
-                Spacer(),
-                CircularProgressIndicator(color: Colors.white),
-                Text("Loading...", style: TextStyle(color: Colors.white)),
-                Spacer()
-              ],
+            child: const Center(
+              child: Column(
+                children: [
+                  Spacer(),
+                  CircularProgressIndicator(color: Colors.white),
+                  Text("Loading...", style: TextStyle(color: Colors.white)),
+                  Spacer(),
+                ],
+              ),
             ),
-          ),
-        )
+          )
         : SingleChildScrollView(
             scrollDirection:
                 Axis.vertical, // Scroll vertikal untuk melihat agent ke bawah
@@ -93,7 +104,7 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
               children: agents.map((agent) {
                 // 1. FILTER DATA JSON: Hanya ambil data milik agen ini (berdasarkan 'NCS')
                 final agentData = rawData
-                    .where((d) => d.ncs.toString().toUpperCase() == agent)
+                    .where((d) => d.petugas.toString().toUpperCase() == agent)
                     .toList();
 
                 // Variabel penampung total keseluruhan per Agen
@@ -224,13 +235,19 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
                                                       .trim()
                                                       .toLowerCase() ==
                                                   currentReason
-                                                      .trim().replaceAll('.','')
+                                                      .trim()
                                                       .toLowerCase() &&
                                               d.potensi
-                                                      .toString()
-                                                      .trim()
-                                                      .toLowerCase().contains(
-                                                  km.trim().replaceAll('.','').toLowerCase()),
+                                                  .toString()
+                                                  .trim()
+                                                  .toLowerCase()
+                                                  .replaceAll('.', '')
+                                                  .contains(
+                                                    km
+                                                        .trim()
+                                                        .replaceAll('.', '')
+                                                        .toLowerCase(),
+                                                  ),
                                         )
                                         .length;
 

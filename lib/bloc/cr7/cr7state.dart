@@ -8,6 +8,7 @@ class Cr7Loading extends Cr7State {}
 
 class Cr7Loaded extends Cr7State {
   final List<CR7> data;
+  final List<String> listPetugas;
   final int currentPage;
   final List<String> sa;
   final List<String> month;
@@ -16,6 +17,7 @@ class Cr7Loaded extends Cr7State {
   final String? selectedMonth;
   final String? selectedNopol;
   Cr7Loaded({
+    required this.listPetugas,
     required this.data,
     required this.sa,
     required this.month,
@@ -27,6 +29,7 @@ class Cr7Loaded extends Cr7State {
   });
   Cr7Loaded copyWith({
     List<String>? sa,
+    List<String>? listPetugas,
     List<String>? month,
     List<CR7>? data,
     String? selectedSa,
@@ -34,6 +37,7 @@ class Cr7Loaded extends Cr7State {
     String? selectedNopol,
   }) {
     return Cr7Loaded(
+      listPetugas: listPetugas??this.listPetugas,
       sa: sa ?? this.sa,
       month: month ?? this.month,
       data: data ?? this.data,

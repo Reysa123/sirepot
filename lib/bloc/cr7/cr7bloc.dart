@@ -19,9 +19,11 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
         data = await repository.fetchcr7(event.page, pageSize);
         final sa = await repository.fetchSa();
         final month = await repository.fetchMonth();
+        final list = await repository.listPetugas();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
         currentState = Cr7Loaded(
+          listPetugas: list,
           data: data,
           sa: sa,
           month: month,
@@ -30,6 +32,7 @@ class Cr7Bloc extends Bloc<Cr7Event, Cr7State> {
         );
         emit(
           Cr7Loaded(
+            listPetugas: list,
             data: data,
             sa: sa,
             month: month,

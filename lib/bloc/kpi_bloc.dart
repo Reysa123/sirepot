@@ -14,16 +14,17 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
     on<FetchKpiData>((event, emit) async {
       emit(KpiLoading());
       try {
-        emit(KpiLoading());
         data = await repository.fetchKpiData(event.page, pageSize);
         final sbe = await repository.fetchPotensi();
         final program = await repository.fetchProgram();
         final repair = await repository.fetchRepair();
         final month = await repository.fetchMonth();
         final area = await repository.fetchArea();
+        final listPetugas = await repository.listPetugas();
         // Cek apakah data yang datang kurang dari pageSize, berarti sudah habis
         bool reachedMax = data.length < pageSize;
         currentState = KpiLoaded(
+          listPetugas: listPetugas,
           data: data,
           sbe: sbe,
           month: month,
@@ -35,6 +36,7 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
         );
         emit(
           KpiLoaded(
+            listPetugas: listPetugas,
             data: data,
             sbe: sbe,
             month: month,
@@ -82,8 +84,9 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
     });
     on<FilterKpiData>((event, emit) async {
       if (state is KpiLoaded) {
+        emit(KpiLoading());
         //final currentState = state as KpiLoaded;
-
+        data = await repository.fetchKpiData(0, 0);
         // Update state dengan pilihan dropdown yang baru
         final updatedRepair = event.repair == "null" ? null : event.repair;
         final updatedSbe = event.sbe == "null" ? null : event.sbe;

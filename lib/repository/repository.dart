@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,19 +10,34 @@ class KpiRepository {
   // final supabase = Supabase.instance.client;
   List<ServiceReminder> response = [];
   List<CR7> list = [];
-  Future<List<ImageProvider>> getImage()async{
-   final ImageProvider image1 = AssetImage("images/background.jpg");
+  String url =
+      'https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec';
+  Future<List<ImageProvider>> getImage() async {
+    final ImageProvider image1 = AssetImage("images/background.jpg");
     final ImageProvider image2 = AssetImage("images/sireport.png"),
         image3 = AssetImage("images/agung.png");
-        return [image1,image2,image3];
+    return [image1, image2, image3];
   }
+
+  Future<List<String>> listPetugas() async {
+    List<String> list = [];
+    SharedPreferences p = await SharedPreferences.getInstance();
+    if (p.containsKey('list_petugas')) {
+      final data1 = p.getStringList('list_petugas');
+      list = data1!;
+    } else {
+      p.setStringList('list_petugas', ['TIKA', 'DWI', 'FUAH']);
+
+      list = ["TIKA", "DWI", "FUAH"];
+    }
+    return list;
+  }
+
   Future<List<ServiceReminder>> fetchKpiData(int page, int pageSize) async {
     //final response = await supabase.from('mra').select();
 
     //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
-    final res = Uri.parse(
-      "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?&sheets=0&columns=15",
-    );
+    final res = Uri.parse("$url?&sheets=0&columns=17");
     // print(res.toString());
     try {
       final data = await http.get(res);
@@ -46,11 +63,11 @@ class KpiRepository {
 
   Future<String> addKpiData(int row, List<String> value) async {
     //final response = await supabase.from('mra').select();
-
+    final tglfu = DateFormat('yyyy/mm/dd').format(DateTime.now());
     String respon = "";
     //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
     final res = Uri.parse(
-      "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?sheets=0&columns=13&columns=15&rows=$row&value=${value[0]}&value=${value[1]}",
+      "$url?sheets=0&columns=16&columns=15&columns=17&rows=$row&value=${value[0]}&value=${value[1]}&value=$tglfu",
     );
     // print(res.toString());
     try {
@@ -61,8 +78,8 @@ class KpiRepository {
       if (data.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON string
         final jsonData = jsonDecode(data.body);
-        //print(jsonData.toString());
-        respon = jsonData.first['message'];
+        print(jsonData['status']);
+        respon = jsonData['status'];
         //print(response.toList().toString());
       } else {
         // Handle specific server failure scenarios
@@ -78,9 +95,11 @@ class KpiRepository {
   Future<List<String>> fetchPotensi() async {
     return response.map((v) => v.potensi!).toSet().toList();
   }
- Future<List<String>> fetchArea() async {
+
+  Future<List<String>> fetchArea() async {
     return response.map((v) => v.area!).toSet().toList();
   }
+
   Future<List<String>> fetchProgram() async {
     // List<Map<String, dynamic>> response = await supabase
     //     .from('program_service')
@@ -114,9 +133,7 @@ class KpiRepository {
     //final response = await supabase.from('mra').select();
 
     //https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec
-    final res = Uri.parse(
-      "https://script.google.com/macros/s/AKfycbwGHHwDcffdmA3TEc79K1dmWKyXGC-dHhvJOV2FBUBc7vb_cvh5xPwGAAfsPzYMXB-9ig/exec?&sheets=1&columns=21",
-    );
+    final res = Uri.parse("$url?&sheets=1&columns=21");
     // print(res.toString());
     try {
       final data = await http.get(res);

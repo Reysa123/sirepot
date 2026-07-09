@@ -178,7 +178,7 @@ class DashboardPage extends StatelessWidget {
       case 5:
         return WidgetF();
       case 6:
-        return KataWA();
+        return Setting();
       default:
         return const Center(child: Text("Page Not Found"));
     }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sirepot/bloc/cr7/cr7bloc.dart';
 import 'package:sirepot/bloc/cr7/cr7event.dart';
 import 'package:sirepot/bloc/cr7/cr7state.dart';
-import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
@@ -50,7 +49,7 @@ class WidgetD extends StatelessWidget {
                     builder: (context, constraints) {
                       return SizedBox(
                         width: constraints.maxWidth,
-                        child: _buildDataTable(context, state.data),
+                        child: _buildDataTable(context, state),
                       );
                     },
                   ),
@@ -115,9 +114,9 @@ class WidgetD extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTable(BuildContext context, List<CR7> data) {
+  Widget _buildDataTable(BuildContext context, Cr7Loaded state) {
     // Inisialisasi source data
-    final source = ServiceReminderSource(data, context);
+    final source = ServiceReminderSource(state, context);
 
     return Card(
       elevation: 0,
@@ -242,15 +241,15 @@ class WidgetD extends StatelessWidget {
 }
 
 class ServiceReminderSource extends DataTableSource {
-  final List<CR7> data;
+  final Cr7Loaded state;
   final BuildContext context;
 
-  ServiceReminderSource(this.data, this.context);
+  ServiceReminderSource(this.state, this.context);
 
   @override
   DataRow? getRow(int index) {
-    if (index >= data.length) return null;
-    final item = data[index];
+    if (index >= state.data.length) return null;
+    final item = state.data[index];
 
     return DataRow2(
       cells: [
@@ -265,10 +264,11 @@ class ServiceReminderSource extends DataTableSource {
           Row(
             children: [
               IconButton(
-                onPressed: ()async {
-                   await showDialog(
+                onPressed: () async {
+                  await showDialog(
                     context: context,
                     builder: (_) => WhatsappWidget(
+                      list: [],
                       layer: false,
                       nmPlg: item.namaPelanggan ?? "Pelanggan",
                       nohp: item.telephoneCp ?? '0',
@@ -284,7 +284,7 @@ class ServiceReminderSource extends DataTableSource {
                 onPressed: () async {
                   final result = await showDialog<StatusItem>(
                     context: context,
-                    builder: (_) => const CallStatusDialog1(),
+                    builder: (_) =>  CallStatusDialog1(state: state,),
                   );
 
                   if (result != null) {
@@ -305,7 +305,7 @@ class ServiceReminderSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => data.length;
+  int get rowCount => state.data.length;
 
   @override
   int get selectedRowCount => 0;
@@ -319,7 +319,8 @@ class StatusItem {
 }
 
 class CallStatusDialog1 extends StatefulWidget {
-  const CallStatusDialog1({super.key});
+  final Cr7Loaded state;
+  const CallStatusDialog1({super.key,required this.state});
 
   @override
   State<CallStatusDialog1> createState() => _CallStatusDialogState();
@@ -355,7 +356,7 @@ class _CallStatusDialogState extends State<CallStatusDialog1> {
 
   @override
   Widget build(BuildContext context) {
-   // final allItems = [...notConnected, ...connected];
+    // final allItems = [...notConnected, ...connected];
 
     return Dialog(
       backgroundColor: const Color(0xffC60000),
