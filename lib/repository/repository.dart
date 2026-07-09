@@ -78,7 +78,7 @@ class KpiRepository {
       if (data.statusCode == 200) {
         // If the server returns a 200 OK response, parse the JSON string
         final jsonData = jsonDecode(data.body);
-        print(jsonData['status']);
+       // print(jsonData['status']);
         respon = jsonData['status'];
         //print(response.toList().toString());
       } else {

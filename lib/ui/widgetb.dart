@@ -138,7 +138,7 @@ class _WidgetBState extends State<WidgetB> {
 
             // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
             if (ctx.mounted) {
-              Navigator.pop(ctx);
+              Navigator.of(ctx, rootNavigator: true).pop();
 
               _showPreviewDialog(ctx, state.data);
             }
@@ -162,7 +162,7 @@ class _WidgetBState extends State<WidgetB> {
 
             // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
             if (ctx.mounted) {
-              Navigator.pop(ctx);
+              Navigator.of(ctx, rootNavigator: true).pop();
 
               _exportToExcel(ctx, state.data);
             }
@@ -357,13 +357,13 @@ class _WidgetBState extends State<WidgetB> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                Navigator.pop(ctx);
+                Navigator.of(ctx, rootNavigator: true).pop();
                 _showLoadingDialog(context, "Menyiapkan data...");
                 await Future.delayed(const Duration(milliseconds: 300));
 
                 // 3. Panggil fungsi untuk memproses dan membuka dialog pratinjau
                 if (context.mounted) {
-                  Navigator.pop(context);
+                  Navigator.of(context, rootNavigator: true).pop();
 
                   _exportToExcel(ctx, data);
                 }
@@ -597,7 +597,7 @@ class _WidgetBState extends State<WidgetB> {
         // Opsional: Untuk memungkinkan clear
         icon: const Icon(
           Icons.keyboard_arrow_down_rounded,
-          color: Colors.red,
+          color: Colors.green,
           size: 20,
         ),
       ),

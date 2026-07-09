@@ -35,7 +35,7 @@ class _SettingState extends State<Setting> {
                 leading: FaIcon(FontAwesomeIcons.whatsapp),
                 title: const Text('Format WhatsApp'),
                 onTap: () {
-                  // Navigator.pop(context);
+                  // Navigator.of(context,rootNavigator: true).pop();
                   KataWA wa = KataWA(); // Menutup drawer;
                   setState(() {
                     wid = wa;
@@ -46,7 +46,7 @@ class _SettingState extends State<Setting> {
                 leading: const Icon(Icons.person),
                 title: const Text('Petugas'),
                 onTap: () {
-                  // Navigator.pop(context);
+                  // Navigator.of(context,rootNavigator: true).pop();
                   PetugasPage wa = PetugasPage(); // Menutup drawer;
                   setState(() {
                     wid = wa;

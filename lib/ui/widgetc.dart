@@ -48,7 +48,7 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
   Future<void> getData() async {
     SharedPreferences p = await SharedPreferences.getInstance();
     if (p.containsKey('list_petugas')) {
-      print('data ada ${p.getStringList('list_petugas')}');
+     // print('data ada ${p.getStringList('list_petugas')}');
       final data1 = p.getStringList('list_petugas');
       final data = data1!;
       setState(() {
@@ -56,7 +56,6 @@ class _KpiTableWidgetState extends State<KpiTableWidget> {
         loading = true;
       });
     } else {
-      print('datakosong');
       setState(() {
         loading = true;
       });

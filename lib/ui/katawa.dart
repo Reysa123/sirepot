@@ -24,7 +24,7 @@ class _KataWAState extends State<KataWA> {
 
 Nama                   : @_nama_pelanggan
 Type Kendaraan  : @_type_kendaraan
-No Polisi              : @no_polisi
+No Polisi              : @_no_polisi
 
 Perkenalkan saya @_pic Petugas booking service dari Bengkel Agung TOYOTA Tabanan.
 
@@ -124,7 +124,7 @@ Salam Agung Toyota Tabanan
     required VoidCallback onEdit,
     required VoidCallback onSave,
   }) {
-    print(edit);
+    //print(edit);
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
