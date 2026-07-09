@@ -5,7 +5,7 @@ import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
+// import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
 import 'package:web/web.dart' as web;
@@ -21,21 +21,21 @@ class WidgetB extends StatefulWidget {
 }
 
 class _WidgetBState extends State<WidgetB> {
-  final Map<String, SingleValueDropDownController> cont = {};
-  @override
-  void dispose() {
-    for (var e in cont.values) {
-      e.dispose();
-    }
-    super.dispose();
-  }
+  // final Map<String, SingleValueDropDownController> cont = {};
+  // @override
+  // void dispose() {
+  //   for (var e in cont.values) {
+  //     e.dispose();
+  //   }
+  //   super.dispose();
+  // }
 
-  SingleValueDropDownController getCont(String key) {
-    if (!cont.containsKey(key)) {
-      cont[key] = SingleValueDropDownController();
-    }
-    return cont[key]!;
-  }
+  // SingleValueDropDownController getCont(String key) {
+  //   if (!cont.containsKey(key)) {
+  //     cont[key] = SingleValueDropDownController();
+  //   }
+  //   return cont[key]!;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -100,67 +100,36 @@ class _WidgetBState extends State<WidgetB> {
     return Row(
       spacing: 8,
       children: [
-        _filterDropdown("Repair Type", state.selectedRepair, state.repair, (v) {
-          ctx.read<KpiBloc>().add(
-            FilterKpiData(
-              repair: v,
-              sbe: state.selectedSbe,
-              program: state.selectedProgram,
-              month: state.selectedMonth,
-              nopol: state.selectedNopol,
-            ),
-          );
-        }),
-        _filterDropdown("Potensi Service", state.selectedSbe, state.sbe, (v) {
-          ctx.read<KpiBloc>().add(
-            FilterKpiData(
-              repair: state.selectedRepair,
-              sbe: v,
-              program: state.selectedProgram,
-              month: state.selectedMonth,
-              nopol: state.selectedNopol,
-            ),
-          );
-        }),
+        _filterDropdown(
+          "Repair Type",
+          state.selectedRepair,
+          state.repair,
+          (v) => _onFilter(ctx, state, repair: v),
+        ),
+        _filterDropdown(
+          "Potensi Service",
+          state.selectedSbe,
+          state.sbe,
+          (v) => _onFilter(ctx, state, sbe: v),
+        ),
         _filterDropdown(
           "Program Service",
           state.selectedProgram,
           state.program,
-          (v) {
-            ctx.read<KpiBloc>().add(
-              FilterKpiData(
-                repair: state.selectedRepair,
-                sbe: state.selectedSbe,
-                program: v,
-                nopol: state.selectedNopol,
-                month: state.selectedMonth,
-              ),
-            );
-          },
+          (v) => _onFilter(ctx, state, program: v),
         ),
-        _filterDropdown("Month", state.selectedMonth, state.month, (v) {
-          ctx.read<KpiBloc>().add(
-            FilterKpiData(
-              repair: state.selectedRepair,
-              sbe: state.selectedSbe,
-              program: state.selectedProgram,
-              month: v,
-              nopol: state.selectedNopol,
-            ),
-          );
-        }),
-        _filterDropdown("Area", state.selectedArea, state.area, (v) {
-          ctx.read<KpiBloc>().add(
-            FilterKpiData(
-              repair: state.selectedRepair,
-              sbe: state.selectedSbe,
-              program: state.selectedProgram,
-              month: state.selectedMonth,
-              nopol: state.selectedNopol,
-              area: v,
-            ),
-          );
-        }),
+        _filterDropdown(
+          "Month",
+          state.selectedMonth,
+          state.month,
+          (v) => _onFilter(ctx, state, month: v),
+        ),
+        _filterDropdown(
+          "Area",
+          state.selectedArea,
+          state.area,
+          (v) => _onFilter(ctx, state, area: v),
+        ),
         // TOMBOL PREVIEW DATA
         InkWell(
           onTap: () async {
@@ -240,6 +209,28 @@ class _WidgetBState extends State<WidgetB> {
           ),
         ),
       ],
+    );
+  }
+
+  void _onFilter(
+    BuildContext ctx,
+    KpiLoaded state, {
+    String? repair,
+    String? sbe,
+    String? program,
+    String? month,
+    String? nopol,
+    String? area,
+  }) {
+    ctx.read<KpiBloc>().add(
+      FilterKpiData(
+        repair: repair ?? state.selectedRepair,
+        sbe: sbe ?? state.selectedSbe,
+        program: program ?? state.selectedProgram,
+        month: month ?? state.selectedMonth,
+        nopol: nopol ?? state.selectedNopol,
+        area: area ?? state.selectedArea,
+      ),
     );
   }
 
@@ -580,49 +571,11 @@ class _WidgetBState extends State<WidgetB> {
     return Container(
       padding: const EdgeInsets.all(4),
       width: 135,
-      child: DropDownTextField(
-        dropDownItemCount: 12,
-        controller: getCont(label),
-        //initialValue: selectedValue,
-        clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
-        // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
-        dropDownIconProperty: IconProperty(
-          icon: Icons.keyboard_arrow_down_rounded,
-          color: Colors.red,
-          size: 20,
-        ),
-        clearIconProperty: IconProperty(
-          icon: Icons.clear,
-          color: Colors.red,
-          size: 20,
-        ),
-        listTextStyle: TextStyle(fontSize: 11),
-        textStyle: TextStyle(fontSize: 11),
-        // 4. Transformasi List<String> Anda menjadi List<DropDownValueModel>
-        dropDownList: list.map((item) {
-          return DropDownValueModel(name: item, value: item);
-        }).toList(),
-
-        // 5. Logika ketika item dipilih ATAU dihapus (clear)
-        onChanged: (dynamic value) {
-          if (value == null || value == "") {
-            //  controller.clearDropDown;
-            onKlik("null"); // Terpanggil saat tombol clear ditekan
-          } else if (value is DropDownValueModel) {
-            onKlik(value.value.toString()); // Terpanggil saat item dipilih
-          }
-        },
-
-        // 6. Validasi Form (Optional, return null jika aman)
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Wajib dipilih";
-          }
-          return null;
-        },
-
-        // 7. Styling Input & Dekorasi
-        textFieldDecoration: InputDecoration(
+      child: DropdownButtonFormField<String>(
+        initialValue: (selectedValue == null || selectedValue == "null")
+            ? null
+            : selectedValue,
+        decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
           border: const OutlineInputBorder(),
@@ -633,8 +586,77 @@ class _WidgetBState extends State<WidgetB> {
             vertical: 8,
           ),
         ),
+        style: const TextStyle(fontSize: 11, color: Colors.black),
+        isExpanded: true,
+        items: list.map((String value) {
+          return DropdownMenuItem<String>(value: value, child: Text(value));
+        }).toList(),
+        onChanged: (String? newValue) {
+          onKlik(newValue);
+        },
+        // Opsional: Untuk memungkinkan clear
+        icon: const Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: Colors.red,
+          size: 20,
+        ),
       ),
     );
+    //   child: DropDownTextField(
+    //     dropDownItemCount: 12,
+    //     controller: getCont(label),
+    //     //initialValue: selectedValue,
+    //     clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
+    //     // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
+    //     dropDownIconProperty: IconProperty(
+    //       icon: Icons.keyboard_arrow_down_rounded,
+    //       color: Colors.red,
+    //       size: 20,
+    //     ),
+    //     clearIconProperty: IconProperty(
+    //       icon: Icons.clear,
+    //       color: Colors.red,
+    //       size: 20,
+    //     ),
+    //     listTextStyle: TextStyle(fontSize: 11),
+    //     textStyle: TextStyle(fontSize: 11),
+    //     // 4. Transformasi List<String> Anda menjadi List<DropDownValueModel>
+    //     dropDownList: list.map((item) {
+    //       return DropDownValueModel(name: item, value: item);
+    //     }).toList(),
+
+    //     // 5. Logika ketika item dipilih ATAU dihapus (clear)
+    //     onChanged: (dynamic value) {
+    //       if (value == null || value == "") {
+    //         //  controller.clearDropDown;
+    //         onKlik("null"); // Terpanggil saat tombol clear ditekan
+    //       } else if (value is DropDownValueModel) {
+    //         onKlik(value.value.toString()); // Terpanggil saat item dipilih
+    //       }
+    //     },
+
+    //     // 6. Validasi Form (Optional, return null jika aman)
+    //     validator: (value) {
+    //       if (value == null || value.isEmpty) {
+    //         return "Wajib dipilih";
+    //       }
+    //       return null;
+    //     },
+
+    //     // 7. Styling Input & Dekorasi
+    //     textFieldDecoration: InputDecoration(
+    //       filled: true,
+    //       fillColor: Colors.white,
+    //       border: const OutlineInputBorder(),
+    //       labelText: label,
+    //       labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
+    //       contentPadding: const EdgeInsets.symmetric(
+    //         horizontal: 10,
+    //         vertical: 8,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -749,8 +771,8 @@ class CallStatusDialog extends StatefulWidget {
 }
 
 class _CallStatusDialogState extends State<CallStatusDialog> {
-  SingleValueDropDownController dropDownController =
-      SingleValueDropDownController();
+  // SingleValueDropDownController dropDownController =
+  //     SingleValueDropDownController();
   StatusItem? selectedStatus;
   String? ncs;
   final List<StatusItem> notConnected = [
@@ -781,11 +803,11 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
       title: 'Kend. Sudah servis Bengkel lain',
     ),
   ];
-  @override
-  void dispose() {
-    dropDownController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   dropDownController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -850,50 +872,8 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                   const SizedBox(height: 8),
                   SizedBox(
                     width: 140,
-                    child: DropDownTextField(
-                      controller: dropDownController,
-                      dropDownItemCount: 4,
-                      clearOption: true,
-                      dropDownIconProperty: IconProperty(
-                        icon: Icons.keyboard_arrow_down_rounded,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      clearIconProperty: IconProperty(
-                        icon: Icons.clear,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      listTextStyle: const TextStyle(fontSize: 12),
-                      textStyle: const TextStyle(fontSize: 12),
-                      // Perbaikan: Memisahkan string array dengan benar
-                      dropDownList: widget.state.listPetugas
-                          .map((e) => DropDownValueModel(name: e, value: e))
-                          .toList(),
-                      // const [
-                      //   DropDownValueModel(name: "TIKA", value: "TIKA"),
-                      //   DropDownValueModel(name: "DWI", value: "DWI"),
-                      //   DropDownValueModel(name: "FUAH", value: "FUAH"),
-                      // ],
-                      onChanged: (dynamic value) {
-                        if (value is DropDownValueModel) {
-                          setState(() {
-                            ncs = value.value
-                                .toString(); // Update teks otomatis saat berganti nama PIC
-                          });
-                        } else {
-                          setState(() {
-                            ncs = "[Nama PIC]";
-                          });
-                        }
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Wajib dipilih";
-                        }
-                        return null;
-                      },
-                      textFieldDecoration: const InputDecoration(
+                    child: DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(),
@@ -907,7 +887,77 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                           vertical: 8,
                         ),
                       ),
+                      initialValue: ncs != "[Nama PIC]" ? ncs : null,
+                      items: widget.state.listPetugas.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          ncs = newValue;
+                        });
+                      },
                     ),
+                    //   child: DropDownTextField(
+                    //     controller: dropDownController,
+                    //     dropDownItemCount: 4,
+                    //     clearOption: true,
+                    //     dropDownIconProperty: IconProperty(
+                    //       icon: Icons.keyboard_arrow_down_rounded,
+                    //       color: Colors.red,
+                    //       size: 20,
+                    //     ),
+                    //     clearIconProperty: IconProperty(
+                    //       icon: Icons.clear,
+                    //       color: Colors.red,
+                    //       size: 20,
+                    //     ),
+                    //     listTextStyle: const TextStyle(fontSize: 12),
+                    //     textStyle: const TextStyle(fontSize: 12),
+                    //     // Perbaikan: Memisahkan string array dengan benar
+                    //     dropDownList: widget.state.listPetugas
+                    //         .map((e) => DropDownValueModel(name: e, value: e))
+                    //         .toList(),
+                    //     // const [
+                    //     //   DropDownValueModel(name: "TIKA", value: "TIKA"),
+                    //     //   DropDownValueModel(name: "DWI", value: "DWI"),
+                    //     //   DropDownValueModel(name: "FUAH", value: "FUAH"),
+                    //     // ],
+                    //     onChanged: (dynamic value) {
+                    //       if (value is DropDownValueModel) {
+                    //         setState(() {
+                    //           ncs = value.value
+                    //               .toString(); // Update teks otomatis saat berganti nama PIC
+                    //         });
+                    //       } else {
+                    //         setState(() {
+                    //           ncs = "[Nama PIC]";
+                    //         });
+                    //       }
+                    //     },
+                    //     validator: (value) {
+                    //       if (value == null || value.isEmpty) {
+                    //         return "Wajib dipilih";
+                    //       }
+                    //       return null;
+                    //     },
+                    //     textFieldDecoration: const InputDecoration(
+                    //       filled: true,
+                    //       fillColor: Colors.white,
+                    //       border: OutlineInputBorder(),
+                    //       labelText: 'PIC',
+                    //       labelStyle: TextStyle(
+                    //         fontSize: 12,
+                    //         color: Colors.black,
+                    //       ),
+                    //       contentPadding: EdgeInsets.symmetric(
+                    //         horizontal: 10,
+                    //         vertical: 8,
+                    //       ),
+                    //     ),
+                    //   ),
                   ),
                   const SizedBox(height: 8),
 
