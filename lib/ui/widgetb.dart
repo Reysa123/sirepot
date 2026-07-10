@@ -588,6 +588,19 @@ class _WidgetBState extends State<WidgetB> {
         ),
         style: const TextStyle(fontSize: 11, color: Colors.black),
         isExpanded: true,
+        suffixIcon: selectedValue != null
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          selectedValue =
+                              null; // Reset nilai menjadi kosong/null
+                          onKlik(null);
+                        });
+                      },
+                    )
+                  : null,
+            ),
         items: list.map((String value) {
           return DropdownMenuItem<String>(value: value, child: Text(value));
         }).toList(),
