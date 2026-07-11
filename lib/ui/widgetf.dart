@@ -6,7 +6,7 @@ import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_state.dart';
 import 'package:sirepot/model/service_reminder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:sirepot/ui/filterdropdown.dart';
 
 class WidgetF extends StatelessWidget {
   const WidgetF({super.key});
@@ -66,17 +66,17 @@ class WidgetF extends StatelessWidget {
     return Row(
       spacing: 15,
       children: [
-        _filterDropdown("Sales", state.selectedSales, state.sales, (v) {
+        FilterDropdown(label:"Sales",initialValue:  state.selectedSales,list:  state.sales,onKlik:  (v) {
           ctx.read<SpesialOrderPartBloc>().add(
             FilterSpesialOrderPartData(sales: v),
           );
         }),
-        _filterDropdown("VIN", state.selectedVin, state.vin, (v) {
+        FilterDropdown(label: "VIN", initialValue:state.selectedVin, list:state.vin, onKlik:(v) {
           ctx.read<SpesialOrderPartBloc>().add(
             FilterSpesialOrderPartData(vin: v),
           );
         }),
-        _filterDropdown("Model", state.selectedModel, state.model, (v) {
+        FilterDropdown(label:"Model",initialValue:  state.selectedModel,list:  state.model,onKlik:  (v) {
           ctx.read<SpesialOrderPartBloc>().add(
             FilterSpesialOrderPartData(model: v),
           );
@@ -167,71 +167,6 @@ class WidgetF extends StatelessWidget {
     );
   }
 
-  Widget _filterDropdown(
-    String label,
-    String? selectedValue,
-    List<String> list,
-    Function(String? value) onKlik,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      width: 140,
-      child: DropDownTextField(
-        dropDownItemCount: 12,
-        // controller: controller,
-        initialValue: selectedValue,
-        clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
-        // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
-        dropDownIconProperty: IconProperty(
-          icon: Icons.keyboard_arrow_down_rounded,
-          color: Colors.red,
-          size: 20,
-        ),
-        clearIconProperty: IconProperty(
-          icon: Icons.clear,
-          color: Colors.red,
-          size: 20,
-        ),
-        listTextStyle: TextStyle(fontSize: 11),
-        textStyle: TextStyle(fontSize: 11),
-        // 4. Transformasi List<String> Anda menjadi List<DropDownValueModel>
-        dropDownList: list.map((item) {
-          return DropDownValueModel(name: item, value: item);
-        }).toList(),
-
-        // 5. Logika ketika item dipilih ATAU dihapus (clear)
-        onChanged: (dynamic value) {
-          if (value == null || value == "") {
-            //  controller.clearDropDown;
-            onKlik("null"); // Terpanggil saat tombol clear ditekan
-          } else if (value is DropDownValueModel) {
-            onKlik(value.value.toString()); // Terpanggil saat item dipilih
-          }
-        },
-
-        // 6. Validasi Form (Optional, return null jika aman)
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Wajib dipilih";
-          }
-          return null;
-        },
-
-        // 7. Styling Input & Dekorasi
-        textFieldDecoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          border: const OutlineInputBorder(),
-          labelText: label,
-          labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 8,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class ServiceReminderSource extends DataTableSource {
@@ -337,7 +272,7 @@ class _CallStatusDialogState extends State<CallStatusDialog3> {
 
   @override
   Widget build(BuildContext context) {
-   // final allItems = [...notConnected, ...connected];
+    // final allItems = [...notConnected, ...connected];
 
     return Dialog(
       backgroundColor: const Color(0xffC60000),
@@ -461,7 +396,7 @@ class _CallStatusDialogState extends State<CallStatusDialog3> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .08),
+        color: Colors.white.withAlpha(8),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white24, width: 1.5),
       ),

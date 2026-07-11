@@ -25,7 +25,9 @@ class _FilterDropdownState extends State<FilterDropdown> {
   void initState() {
     super.initState();
     // Inisialisasi nilai dari parameter
-    _selectedValue = (widget.initialValue == "null") ? null : widget.initialValue;
+    _selectedValue = (widget.initialValue == "null")
+        ? null
+        : widget.initialValue;
   }
 
   @override
@@ -37,6 +39,7 @@ class _FilterDropdownState extends State<FilterDropdown> {
         initialValue: _selectedValue,
         decoration: InputDecoration(
           filled: true,
+          hintText: '--pilih item--',
           fillColor: Colors.white,
           border: const OutlineInputBorder(),
           labelText: widget.label,

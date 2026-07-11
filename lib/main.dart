@@ -11,6 +11,7 @@ import 'package:sirepot/bloc/spesialorderpart/spesialorderpart_event.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/dashboardpage.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Supabase.initialize(
@@ -31,7 +32,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return MultiRepositoryProvider(
       // 1. Sediakan Repository
       providers: [RepositoryProvider(create: (context) => KpiRepository())],
@@ -56,9 +56,7 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => NavigationBloc()
-              ..add(
-                ChangeMenuEvent(0),
-              ), // Event awal untuk isi tabel [cite: 10, 11]
+              ..add(LoadingMenu()), // Event awal untuk isi tabel [cite: 10, 11]
           ),
         ],
         child: MaterialApp(

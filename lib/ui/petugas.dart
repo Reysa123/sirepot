@@ -54,11 +54,24 @@ class _PetugasPageState extends State<PetugasPage> {
         ),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.yellow,
+              foregroundColor: Colors.black,
+              shadowColor: Colors.red,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
             onPressed: () => Navigator.of(ctx, rootNavigator: true).pop(),
             child: const Text("Batal"),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.black,
+              shadowColor: Colors.yellow,
+              elevation: 5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

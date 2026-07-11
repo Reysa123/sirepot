@@ -9,6 +9,7 @@ class FetchKpiData extends KpiEvent {
   final String? month;
   final String? nopol;
   final String? area;
+  final bool reload;
   FetchKpiData({
     this.page = 0,
     this.listPetugas,
@@ -18,6 +19,7 @@ class FetchKpiData extends KpiEvent {
     this.month,
     this.nopol,
     this.area,
+    this.reload = false,
   });
 }
 
@@ -28,6 +30,7 @@ class FilterKpiData extends KpiEvent {
   final String? month;
   final String? nopol;
   final String? area;
+  final bool reload;
 
   FilterKpiData({
     this.repair,
@@ -36,6 +39,7 @@ class FilterKpiData extends KpiEvent {
     this.month,
     this.nopol,
     this.area,
+    this.reload = false,
   });
 }
 

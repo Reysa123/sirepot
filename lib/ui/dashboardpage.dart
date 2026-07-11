@@ -17,39 +17,35 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    ImageProvider image1 = AssetImage("images/background.jpg");
-    ImageProvider image2 = AssetImage("images/sireport.png"),
-        image3 = AssetImage("images/agung.png");
     return Scaffold(
-      // Menggunakan background color abu-abu terang agar Card terlihat menonjol
-      //backgroundColor: Colors.grey[100],
       body: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
           if (state is Loading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is NavigationStates) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  width: width > 1200 ? width : 1200,
-                  height: height > 580 ? height : 580,
-                  decoration: BoxDecoration(
-                    //color: Colors.red,
-                    image: DecorationImage(
-                      image: image1,
-                      fit: BoxFit
-                          .fill, // Menyesuaikan gambar agar menutupi seluruh layar
-                    ),
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                width: width > 1200 ? width : 1200,
+                height: height > 580 ? height : 580,
+                decoration: BoxDecoration(
+                  //color: Colors.red,
+                  image: DecorationImage(
+                    image: state.images[0],
+                    fit: BoxFit
+                        .fill, // Menyesuaikan gambar agar menutupi seluruh layar
                   ),
-                  child: Column(
-                    children: [
-                      // Header tetap di paling atas
-                      _buildHeader(image2, image3),
+                ),
+                child: Column(
+                  children: [
+                    // Header tetap di paling atas
+                    _buildHeader(state.images[1], state.images[2]),
 
-                      // Row untuk Sidebar dan Main Content dibungkus Expanded
-                      // agar mengambil sisa tinggi layar yang tersedia
+                    // Row untuk Sidebar dan Main Content dibungkus Expanded
+                    // agar mengambil sisa tinggi layar yang tersedia
+                    if (state is NaviNull) ...[
                       Expanded(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,13 +61,11 @@ class DashboardPage extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ),
-            );
-          } else {
-            return Center(child: Text('Tidak ditemukan data'));
-          }
+            ),
+          );
         },
       ),
     );
@@ -84,18 +78,6 @@ class DashboardPage extends StatelessWidget {
       color: Colors.transparent,
       child: Column(
         children: [
-          // const DrawerHeader(
-          //   child: Center(
-          //     child: Text(
-          //       "SI-REPT",
-          //       style: TextStyle(
-          //         color: Colors.white,
-          //         fontSize: 28,
-          //         fontWeight: FontWeight.bold,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Expanded(
             child: ListView(
               padding: EdgeInsets.all(8),

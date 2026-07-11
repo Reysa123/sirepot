@@ -86,7 +86,9 @@ class KpiBloc extends Bloc<KpiEvent, KpiState> {
       if (state is KpiLoaded) {
         emit(KpiLoading());
         //final currentState = state as KpiLoaded;
-        data = await repository.fetchKpiData(0, 0);
+        if (event.reload) {
+          data = await repository.fetchKpiData(0, 0);
+        }
         // Update state dengan pilihan dropdown yang baru
         final updatedRepair = event.repair == "null" ? null : event.repair;
         final updatedSbe = event.sbe == "null" ? null : event.sbe;

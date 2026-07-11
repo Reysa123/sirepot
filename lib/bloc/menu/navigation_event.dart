@@ -1,6 +1,8 @@
 abstract class NavigationEvent {}
 
 class ChangeMenuEvent extends NavigationEvent {
-  final int index;
+  int index = 0;
   ChangeMenuEvent(this.index);
 }
+
+class LoadingMenu extends NavigationEvent {}

@@ -5,9 +5,10 @@ import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sirepot/ui/filterdropdown.dart';
+// import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
+import 'package:sirepot/ui/filterdropdown.dart';
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
@@ -21,7 +22,6 @@ class WidgetB extends StatefulWidget {
 }
 
 class _WidgetBState extends State<WidgetB> {
- 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<KpiBloc, KpiState>(
@@ -86,34 +86,34 @@ class _WidgetBState extends State<WidgetB> {
       spacing: 8,
       children: [
         FilterDropdown(
-         label: "Repair Type",
-         initialValue: state.selectedRepair,
-         list: state.repair,
-         onKlik: (v) => _onFilter(ctx, state, repair: v),
+          label: "Repair Type",
+          initialValue: state.selectedRepair,
+          list: state.repair,
+          onKlik: (v) => _onFilter(ctx, state, repair: v),
         ),
         FilterDropdown(
-          label:"Potensi Service",
-         initialValue: state.selectedSbe,
-         list: state.sbe,
-         onKlik: (v) => _onFilter(ctx, state, sbe: v),
+          label: "Potensi Service",
+          initialValue: state.selectedSbe,
+          list: state.sbe,
+          onKlik: (v) => _onFilter(ctx, state, sbe: v),
         ),
         FilterDropdown(
-         label: "Program Service",
-         initialValue: state.selectedProgram,
-         list: state.program,
-         onKlik: (v) => _onFilter(ctx, state, program: v),
+          label: "Program Service",
+          initialValue: state.selectedProgram,
+          list: state.program,
+          onKlik: (v) => _onFilter(ctx, state, program: v),
         ),
         FilterDropdown(
-          label:"Month",
-         initialValue: state.selectedMonth,
-          list:state.month,
-         onKlik: (v) => _onFilter(ctx, state, month: v),
+          label: "Month",
+          initialValue: state.selectedMonth,
+          list: state.month,
+          onKlik: (v) => _onFilter(ctx, state, month: v),
         ),
         FilterDropdown(
-         label: "Area",
-         initialValue: state.selectedArea,
-         list: state.area,
-         onKlik: (v) => _onFilter(ctx, state, area: v),
+          label: "Area",
+          initialValue: state.selectedArea,
+          list: state.area,
+          onKlik: (v) => _onFilter(ctx, state, area: v),
         ),
         // TOMBOL PREVIEW DATA
         InkWell(
@@ -209,12 +209,12 @@ class _WidgetBState extends State<WidgetB> {
   }) {
     ctx.read<KpiBloc>().add(
       FilterKpiData(
-        repair: repair ,
+        repair: repair,
         sbe: sbe,
         program: program,
         month: month,
-        nopol: nopol ,
-        area: area ,
+        nopol: nopol,
+        area: area,
       ),
     );
   }
@@ -546,61 +546,6 @@ class _WidgetBState extends State<WidgetB> {
       ),
     );
   }
-
-//   Widget _filterDropdown(
-//     String label,
-//     String? selectedValue,
-//     List<String> list,
-//     Function(String? value) onKlik,
-//   ) {
-//     return Container(
-//       padding: const EdgeInsets.all(4),
-//       width: 135,
-//         items: list.map((String value) {
-//           return DropdownMenuItem<String>(value: value, child: Text(value));
-//         }).toList(),
-//         onChanged: (String? newValue) {
-//           onKlik(newValue);
-//         },
-//         // Opsional: Untuk memungkinkan clear
-//         icon: const Icon(
-//           Icons.keyboard_arrow_down_rounded,
-//           color: Colors.green,
-//           size: 20,
-//         ),
-//       child: DropdownButtonFormField<String>(
-//         initialValue: (selectedValue == null || selectedValue == "null")
-//             ? null
-//             : selectedValue,
-//         decoration: InputDecoration(
-//           filled: true,
-//           fillColor: Colors.white,
-//           border: const OutlineInputBorder(),
-//           labelText: label,
-//           labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
-//           contentPadding: const EdgeInsets.symmetric(
-//             horizontal: 10,
-//             vertical: 8,
-//           ),
-//         ),
-//         style: const TextStyle(fontSize: 11, color: Colors.black),
-//         isExpanded: true,
-//         suffixIcon: selectedValue != null
-//                   ? IconButton(
-//                       icon: const Icon(Icons.clear, color: Colors.red),
-//                       onPressed: () {
-//                         setState(() {
-//                           selectedValue =
-//                               null; // Reset nilai menjadi kosong/null
-//                           onKlik(null);
-//                         });
-//                       },
-//                     )
-//                   : null,
-//             ),
-//       ),
-//     )
-//      }
 }
 
 class ServiceReminderSource extends DataTableSource {
@@ -672,6 +617,7 @@ class ServiceReminderSource extends DataTableSource {
                           program: state.selectedProgram,
                           nopol: state.selectedNopol,
                           month: state.selectedMonth,
+                          reload: true,
                         ),
                       );
                     }
@@ -746,11 +692,6 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
       title: 'Kend. Sudah servis Bengkel lain',
     ),
   ];
-  // @override
-  // void dispose() {
-  //   dropDownController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -843,64 +784,6 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
                         });
                       },
                     ),
-                    //   child: DropDownTextField(
-                    //     controller: dropDownController,
-                    //     dropDownItemCount: 4,
-                    //     clearOption: true,
-                    //     dropDownIconProperty: IconProperty(
-                    //       icon: Icons.keyboard_arrow_down_rounded,
-                    //       color: Colors.red,
-                    //       size: 20,
-                    //     ),
-                    //     clearIconProperty: IconProperty(
-                    //       icon: Icons.clear,
-                    //       color: Colors.red,
-                    //       size: 20,
-                    //     ),
-                    //     listTextStyle: const TextStyle(fontSize: 12),
-                    //     textStyle: const TextStyle(fontSize: 12),
-                    //     // Perbaikan: Memisahkan string array dengan benar
-                    //     dropDownList: widget.state.listPetugas
-                    //         .map((e) => DropDownValueModel(name: e, value: e))
-                    //         .toList(),
-                    //     // const [
-                    //     //   DropDownValueModel(name: "TIKA", value: "TIKA"),
-                    //     //   DropDownValueModel(name: "DWI", value: "DWI"),
-                    //     //   DropDownValueModel(name: "FUAH", value: "FUAH"),
-                    //     // ],
-                    //     onChanged: (dynamic value) {
-                    //       if (value is DropDownValueModel) {
-                    //         setState(() {
-                    //           ncs = value.value
-                    //               .toString(); // Update teks otomatis saat berganti nama PIC
-                    //         });
-                    //       } else {
-                    //         setState(() {
-                    //           ncs = "[Nama PIC]";
-                    //         });
-                    //       }
-                    //     },
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return "Wajib dipilih";
-                    //       }
-                    //       return null;
-                    //     },
-                    //     textFieldDecoration: const InputDecoration(
-                    //       filled: true,
-                    //       fillColor: Colors.white,
-                    //       border: OutlineInputBorder(),
-                    //       labelText: 'PIC',
-                    //       labelStyle: TextStyle(
-                    //         fontSize: 12,
-                    //         color: Colors.black,
-                    //       ),
-                    //       contentPadding: EdgeInsets.symmetric(
-                    //         horizontal: 10,
-                    //         vertical: 8,
-                    //       ),
-                    //     ),
-                    //   ),
                   ),
                   const SizedBox(height: 8),
 
@@ -971,7 +854,7 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .08),
+        color: Colors.white.withAlpha(8),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white24, width: 1.5),
       ),

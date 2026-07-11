@@ -1,4 +1,3 @@
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sirepot/ui/katawa.dart';
@@ -27,14 +26,12 @@ class WhatsappWidget extends StatefulWidget {
 }
 
 class _WhatsappWidgetState extends State<WhatsappWidget> {
-  late SingleValueDropDownController _dropDownController;
   late TextEditingController _textController;
   String? _selectedPic; // PIC Default
 
   @override
   void initState() {
     super.initState();
-    _dropDownController = SingleValueDropDownController();
     _textController = TextEditingController();
     _updateTextMessage(); // Generate pesan pertama kali
   }
@@ -99,7 +96,6 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
 
   @override
   void dispose() {
-    _dropDownController.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -169,33 +165,17 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
                   const SizedBox(width: 12),
                   SizedBox(
                     width: 140,
-                    child: DropDownTextField(
-                      controller: _dropDownController,
-                      dropDownItemCount: 4,
-                      clearOption: true,
-                      dropDownIconProperty: IconProperty(
-                        icon: Icons.keyboard_arrow_down_rounded,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      clearIconProperty: IconProperty(
-                        icon: Icons.clear,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      listTextStyle: const TextStyle(fontSize: 12),
-                      textStyle: const TextStyle(fontSize: 12),
-                      // Perbaikan: Memisahkan string array dengan benar
-                      dropDownList: widget.list.map((e)=>DropDownValueModel(name:e,value: e)).toList(),
-                      // const [
-                      //   DropDownValueModel(name: "TIKA", value: "TIKA"),
-                      //   DropDownValueModel(name: "DWI", value: "DWI"),
-                      //   DropDownValueModel(name: "FUAH", value: "FUAH"),
-                      // ],
-                      onChanged: (dynamic value) {
-                        if (value is DropDownValueModel) {
+                    child: DropdownButtonFormField<String>(
+                      items: widget.list
+                          .map(
+                            (e) => DropdownMenuItem(value: e, child: Text(e)),
+                          )
+                          .toList(),
+
+                      onChanged: (v) {
+                        if (v != null) {
                           setState(() {
-                            _selectedPic = value.value.toString();
+                            _selectedPic = v.toString();
                             _updateTextMessage(); // Update teks otomatis saat berganti nama PIC
                           });
                         } else {
@@ -211,7 +191,7 @@ class _WhatsappWidgetState extends State<WhatsappWidget> {
                         }
                         return null;
                       },
-                      textFieldDecoration: const InputDecoration(
+                      decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(),
