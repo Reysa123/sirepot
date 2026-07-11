@@ -5,7 +5,7 @@ import 'package:sirepot/bloc/kpi_bloc.dart';
 import 'package:sirepot/bloc/kpi_event.dart';
 import 'package:sirepot/bloc/kpi_state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:sirepot/ui/filterdropdown.dart';
 import 'package:sirepot/repository/repository.dart';
 import 'package:sirepot/ui/widgetwhatsapp.dart';
 import 'package:web/web.dart' as web;
@@ -21,22 +21,7 @@ class WidgetB extends StatefulWidget {
 }
 
 class _WidgetBState extends State<WidgetB> {
-  // final Map<String, SingleValueDropDownController> cont = {};
-  // @override
-  // void dispose() {
-  //   for (var e in cont.values) {
-  //     e.dispose();
-  //   }
-  //   super.dispose();
-  // }
-
-  // SingleValueDropDownController getCont(String key) {
-  //   if (!cont.containsKey(key)) {
-  //     cont[key] = SingleValueDropDownController();
-  //   }
-  //   return cont[key]!;
-  // }
-
+ 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<KpiBloc, KpiState>(
@@ -100,35 +85,35 @@ class _WidgetBState extends State<WidgetB> {
     return Row(
       spacing: 8,
       children: [
-        _filterDropdown(
-          "Repair Type",
-          state.selectedRepair,
-          state.repair,
-          (v) => _onFilter(ctx, state, repair: v),
+        FilterDropdown(
+         label: "Repair Type",
+         initialValue: state.selectedRepair,
+         list: state.repair,
+         onKlik: (v) => _onFilter(ctx, state, repair: v),
         ),
-        _filterDropdown(
-          "Potensi Service",
-          state.selectedSbe,
-          state.sbe,
-          (v) => _onFilter(ctx, state, sbe: v),
+        FilterDropdown(
+          label:"Potensi Service",
+         initialValue: state.selectedSbe,
+         list: state.sbe,
+         onKlik: (v) => _onFilter(ctx, state, sbe: v),
         ),
-        _filterDropdown(
-          "Program Service",
-          state.selectedProgram,
-          state.program,
-          (v) => _onFilter(ctx, state, program: v),
+        FilterDropdown(
+         label: "Program Service",
+         initialValue: state.selectedProgram,
+         list: state.program,
+         onKlik: (v) => _onFilter(ctx, state, program: v),
         ),
-        _filterDropdown(
-          "Month",
-          state.selectedMonth,
-          state.month,
-          (v) => _onFilter(ctx, state, month: v),
+        FilterDropdown(
+          label:"Month",
+         initialValue: state.selectedMonth,
+          list:state.month,
+         onKlik: (v) => _onFilter(ctx, state, month: v),
         ),
-        _filterDropdown(
-          "Area",
-          state.selectedArea,
-          state.area,
-          (v) => _onFilter(ctx, state, area: v),
+        FilterDropdown(
+         label: "Area",
+         initialValue: state.selectedArea,
+         list: state.area,
+         onKlik: (v) => _onFilter(ctx, state, area: v),
         ),
         // TOMBOL PREVIEW DATA
         InkWell(
@@ -615,62 +600,7 @@ class _WidgetBState extends State<WidgetB> {
         ),
       ),
     );
-    //   child: DropDownTextField(
-    //     dropDownItemCount: 12,
-    //     controller: getCont(label),
-    //     //initialValue: selectedValue,
-    //     clearOption: true, // 2. Aktifkan tombol clear bawaan (ikon silang)
-    //     // 3. Konfigurasi Ikon Dropdown (Panah Bawah)
-    //     dropDownIconProperty: IconProperty(
-    //       icon: Icons.keyboard_arrow_down_rounded,
-    //       color: Colors.red,
-    //       size: 20,
-    //     ),
-    //     clearIconProperty: IconProperty(
-    //       icon: Icons.clear,
-    //       color: Colors.red,
-    //       size: 20,
-    //     ),
-    //     listTextStyle: TextStyle(fontSize: 11),
-    //     textStyle: TextStyle(fontSize: 11),
-    //     // 4. Transformasi List<String> Anda menjadi List<DropDownValueModel>
-    //     dropDownList: list.map((item) {
-    //       return DropDownValueModel(name: item, value: item);
-    //     }).toList(),
-
-    //     // 5. Logika ketika item dipilih ATAU dihapus (clear)
-    //     onChanged: (dynamic value) {
-    //       if (value == null || value == "") {
-    //         //  controller.clearDropDown;
-    //         onKlik("null"); // Terpanggil saat tombol clear ditekan
-    //       } else if (value is DropDownValueModel) {
-    //         onKlik(value.value.toString()); // Terpanggil saat item dipilih
-    //       }
-    //     },
-
-    //     // 6. Validasi Form (Optional, return null jika aman)
-    //     validator: (value) {
-    //       if (value == null || value.isEmpty) {
-    //         return "Wajib dipilih";
-    //       }
-    //       return null;
-    //     },
-
-    //     // 7. Styling Input & Dekorasi
-    //     textFieldDecoration: InputDecoration(
-    //       filled: true,
-    //       fillColor: Colors.white,
-    //       border: const OutlineInputBorder(),
-    //       labelText: label,
-    //       labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
-    //       contentPadding: const EdgeInsets.symmetric(
-    //         horizontal: 10,
-    //         vertical: 8,
-    //       ),
-    //     ),
-    //   ),
-    // );
-  }
+     }
 }
 
 class ServiceReminderSource extends DataTableSource {
