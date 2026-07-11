@@ -480,7 +480,7 @@ class _CallStatusDialogState extends State<CallStatusDialog1> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.08),
+        color: Colors.white.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white24, width: 1.5),
       ),

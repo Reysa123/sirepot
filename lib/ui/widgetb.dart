@@ -209,12 +209,12 @@ class _WidgetBState extends State<WidgetB> {
   }) {
     ctx.read<KpiBloc>().add(
       FilterKpiData(
-        repair: repair ?? state.selectedRepair,
-        sbe: sbe ?? state.selectedSbe,
-        program: program ?? state.selectedProgram,
-        month: month ?? state.selectedMonth,
-        nopol: nopol ?? state.selectedNopol,
-        area: area ?? state.selectedArea,
+        repair: repair ,
+        sbe: sbe,
+        program: program,
+        month: month,
+        nopol: nopol ,
+        area: area ,
       ),
     );
   }
@@ -547,60 +547,60 @@ class _WidgetBState extends State<WidgetB> {
     );
   }
 
-  Widget _filterDropdown(
-    String label,
-    String? selectedValue,
-    List<String> list,
-    Function(String? value) onKlik,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      width: 135,
-      child: DropdownButtonFormField<String>(
-        initialValue: (selectedValue == null || selectedValue == "null")
-            ? null
-            : selectedValue,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          border: const OutlineInputBorder(),
-          labelText: label,
-          labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 8,
-          ),
-        ),
-        style: const TextStyle(fontSize: 11, color: Colors.black),
-        isExpanded: true,
-        suffixIcon: selectedValue != null
-                  ? IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          selectedValue =
-                              null; // Reset nilai menjadi kosong/null
-                          onKlik(null);
-                        });
-                      },
-                    )
-                  : null,
-            ),
-        items: list.map((String value) {
-          return DropdownMenuItem<String>(value: value, child: Text(value));
-        }).toList(),
-        onChanged: (String? newValue) {
-          onKlik(newValue);
-        },
-        // Opsional: Untuk memungkinkan clear
-        icon: const Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: Colors.green,
-          size: 20,
-        ),
-      ),
-    );
-     }
+//   Widget _filterDropdown(
+//     String label,
+//     String? selectedValue,
+//     List<String> list,
+//     Function(String? value) onKlik,
+//   ) {
+//     return Container(
+//       padding: const EdgeInsets.all(4),
+//       width: 135,
+//         items: list.map((String value) {
+//           return DropdownMenuItem<String>(value: value, child: Text(value));
+//         }).toList(),
+//         onChanged: (String? newValue) {
+//           onKlik(newValue);
+//         },
+//         // Opsional: Untuk memungkinkan clear
+//         icon: const Icon(
+//           Icons.keyboard_arrow_down_rounded,
+//           color: Colors.green,
+//           size: 20,
+//         ),
+//       child: DropdownButtonFormField<String>(
+//         initialValue: (selectedValue == null || selectedValue == "null")
+//             ? null
+//             : selectedValue,
+//         decoration: InputDecoration(
+//           filled: true,
+//           fillColor: Colors.white,
+//           border: const OutlineInputBorder(),
+//           labelText: label,
+//           labelStyle: const TextStyle(fontSize: 11, color: Colors.black),
+//           contentPadding: const EdgeInsets.symmetric(
+//             horizontal: 10,
+//             vertical: 8,
+//           ),
+//         ),
+//         style: const TextStyle(fontSize: 11, color: Colors.black),
+//         isExpanded: true,
+//         suffixIcon: selectedValue != null
+//                   ? IconButton(
+//                       icon: const Icon(Icons.clear, color: Colors.red),
+//                       onPressed: () {
+//                         setState(() {
+//                           selectedValue =
+//                               null; // Reset nilai menjadi kosong/null
+//                           onKlik(null);
+//                         });
+//                       },
+//                     )
+//                   : null,
+//             ),
+//       ),
+//     )
+//      }
 }
 
 class ServiceReminderSource extends DataTableSource {
@@ -971,7 +971,7 @@ class _CallStatusDialogState extends State<CallStatusDialog> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.08),
+        color: Colors.white.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white24, width: 1.5),
       ),

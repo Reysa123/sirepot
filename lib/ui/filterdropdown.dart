@@ -34,7 +34,7 @@ class _FilterDropdownState extends State<FilterDropdown> {
       padding: const EdgeInsets.all(4),
       width: 135,
       child: DropdownButtonFormField<String>(
-        value: _selectedValue,
+        initialValue: _selectedValue,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -61,11 +61,11 @@ class _FilterDropdownState extends State<FilterDropdown> {
         ),
         style: const TextStyle(fontSize: 11, color: Colors.black),
         isExpanded: true,
-        icon: const Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: Colors.green,
-          size: 20,
-        ),
+        // icon: const Icon(
+        //   Icons.keyboard_arrow_down_rounded,
+        //   color: Colors.green,
+        //   size: 20,
+        // ),
         items: widget.list.map((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -73,6 +73,7 @@ class _FilterDropdownState extends State<FilterDropdown> {
           );
         }).toList(),
         onChanged: (String? newValue) {
+          debugPrint(newValue!);
           setState(() {
             _selectedValue = newValue;
           });
